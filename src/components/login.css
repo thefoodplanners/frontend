@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  background-color: white;
+  width: 25em;
+  height: 30em;
+  box-shadow: 0 0.188em 1.55em rgb(156, 156, 156);
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form h2 {
+  position: relative;
+  top: -30px;
+}
+
+form p {
+  padding-top: 20px;
+}
