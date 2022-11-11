@@ -1,6 +1,6 @@
 import NavBar from "../components/navbar"
 
-const Layout = () => {
+const Header = () => {
   return (
     <>
       <NavBar />
@@ -8,4 +8,4 @@ const Layout = () => {
   )
 };
 
-export default Layout;
+export default Header;
