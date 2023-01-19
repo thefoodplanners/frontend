@@ -7,7 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 const Register = () => {
   return (
     <Card className="cardContainer">
-      <Card.Header>Register</Card.Header>
+      <Card.Header className="bg-primary">Register</Card.Header>
       <Card.Body>
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">

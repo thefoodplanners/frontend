@@ -1,17 +1,24 @@
 
 // Default variable overrides
-$body-bg: #000;
-$body-color: #111;
+$body-bg: #FFFDE3;
+//$body-color: #FFFDE3; // #111;
 
-$primary: #6f42c1;
-$secondary: #6c757d;
-$danger: #ff4136;
-$white: #0074d9;
+$primary: #DD5353;
+$secondary: #F50057;
+//$danger: #ff4136;
+//$white: #0074d9;
 
-//$theme-colors: (
-//  "primary": $primary,
-//  "danger": $danger
-//);
+
+$theme-colors: (
+  "primary":    $primary,
+  "secondary":  $secondary,
+//  "success":    $success,
+//  "info":       $info,
+//  "warning":    $warning,
+//  "danger":     $danger,
+//  "light":      $light,
+//  "dark":       $dark
+);
 
 @import '~bootstrap/scss/bootstrap.scss';
 @import './footer.scss';

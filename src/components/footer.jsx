@@ -2,9 +2,9 @@ import { Container } from "react-bootstrap"
 
 export default function Footer(){
     return (
-      <footer className="footer mt-auto py-3 bg-light">
+      <footer className="footer mt-auto py-3 bg-dark text-light">
         <Container>
-          <p> *Copyright thefoodplanners, we are awesome </p>
+          <p className=""> *Copyright thefoodplanners, we are awesome </p>
         </Container>
       </footer>
     )

@@ -7,7 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 const Login = () => {
   return (
     <Card className="cardContainer">
-      <Card.Header>Login</Card.Header>
+      <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -26,7 +26,7 @@ const Login = () => {
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <Form.Check type="checkbox" label="Remember me" />
             </Form.Group>
-            <Button className="ms-auto" variant="primary" type="submit">
+            <Button className="ms-auto btn" variant="primary" type="submit">
               Login 
             </Button>
           </Stack>

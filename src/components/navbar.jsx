@@ -6,7 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 function NavBar() {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar className="navbar navbar-dark bg-primary" expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/" >The Food Planners</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -25,6 +25,9 @@ function NavBar() {
                 <Nav.Link>Dashboard</Nav.Link>
             </LinkContainer>
           </Nav>
+        </Navbar.Collapse>
+        <Navbar.Collapse className="justify-content-end">
+          <i className="bi bi-gear"></i>
         </Navbar.Collapse>
       </Container>
     </Navbar>

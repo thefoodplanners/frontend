@@ -8,12 +8,15 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import NoPage from "./pages/nopage";
 import Footer from "./components/footer";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Container className="mb-4">
+      <Container className="mb-4" fluid>
         <Routes>
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
