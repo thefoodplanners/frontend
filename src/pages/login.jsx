@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
@@ -5,14 +6,42 @@ import Stack from 'react-bootstrap/Stack';
 import { LinkContainer } from 'react-router-bootstrap'
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const body = {
+      username: email,
+      password: password
+    }
+    
+    console.log(email);
+    console.log(password);
+    
+    fetch("http://localhost:9000/login", {
+      method: "POST",
+      body: JSON.stringify(body)
+    }).then((response) => {
+      console.log(response);
+      return response.json(); // do something with response JSON
+    });
+  }
+
   return (
     <Card className="cardContainer">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Control 
+              type="email" 
+              placeholder="Enter email" 
+              name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
             <Form.Text className="text-muted">
               We'll never share your email with anyone else.
             </Form.Text>
@@ -20,7 +49,13 @@ const Login = () => {
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+            <Form.Control 
+              type="password" 
+              placeholder="Password" 
+              name="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
           </Form.Group>
           <Stack direction="horizontal" gap={3}>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
