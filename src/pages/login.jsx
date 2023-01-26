@@ -4,10 +4,12 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import { LinkContainer } from 'react-router-bootstrap'
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,10 +23,14 @@ const Login = () => {
     
     fetch("http://localhost:9000/login", {
       method: "POST",
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
     }).then((response) => {
       console.log(response);
-      return response.json(); // do something with response JSON
+      if (response.status == 200) navigate("/dashboard");
+      //return response.json(); // do something with response JSON
     });
   }
 
