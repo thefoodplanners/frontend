@@ -1,11 +1,11 @@
 import Image from 'react-bootstrap/Image'
-import MealPlannerImage from '../assets/meal_planner_image.png'
+import Calender from '../components/calender'
 
 const Dashboard = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      <Image src={MealPlannerImage} />
+      <Calender />
     </div>
   );
 };
