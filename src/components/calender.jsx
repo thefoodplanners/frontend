@@ -25,9 +25,13 @@ const Calender = () => {
     });
     setCurrentWeekMeals(
       [
-        [{name: "eggs", id: 69},{},{name: "chicken", id: 27},{},{name: "m1"},{},{name: "m1"}],
-        [{name: "m2"},{name: "m2"},{name: "m2"},{},{name: "m2"},{},{}],
-        [{name: "m3"},{name: "m3"},{name: "m3"},{name: "m3"},{name: "m3"},{name: "m3"},{name: "m3"}],
+        [{name: "eggs", id: 69},{name: "chicken", id: 27}], // monday
+        [{name: "m1"},{name: "m2"},{name: "m3"}], // tuesday
+        [], // wednesday
+        [{name: "m1"},{name: "m2"},{name: "m3"},{name: "m4"},{name: "m5"},{name: "m6"}], // thursday
+        [], // friday
+        [], // saterday
+        [], // sunday
       ]);
   }, []);
   
@@ -45,62 +49,66 @@ const Calender = () => {
       </Row>
   ); 
 
-  // render header columns in the calender
-  const renderDayHeaders = () => (
-    <Row>
-      <Col xs="3"></Col>
-      <Col xs="1" className="text-center border"> Monday </Col>
-      <Col xs="1" className="text-center border"> Tues </Col>
-      <Col xs="1" className="text-center border"> Wed </Col>
-      <Col xs="1" className="text-center border"> Thurs </Col>
-      <Col xs="1" className="text-center border"> Fri </Col>
-      <Col xs="1" className="text-center border"> Sat </Col>
-      <Col xs="1" className="text-center border"> Sun </Col>
-    </Row>
-  );
-
-  // render meal columns in the calender
-  const renderMealRows = () => {
-    // reformat meals to be by meal rather than by day
-    //const mealsByMeal = []
-    //for (let i = 0; i < currentWeekMeals.length; i++) {
-    //  mealsByMeal[index] = [];
-    //  // for each meal in that day
-    //  for (let j = 0; j < currentWeekMeals.length; i++) {
-    //    mealsByMeal[i].push(currentWeekMeals[j])
-    //  }
-    //}
-
+  const renderDayRow = (day) => {
+    //console.log(currentWeekMeals);
     return (
       <div>
-        {
-          currentWeekMeals.map((item,index)=>(
-            <Row>
-              <Col xs="2"></Col>
-              {
-                currentWeekMeals[index].map((i, j) => {
-                  if (i.name !== undefined) {
-                    return <Col xs="1" className="text-center border"> {"M"+i.name} </Col>
-                  } else
-                    return <Col xs="1" className="text-center border">  </Col>
-                })
-              }
-            </Row>
-          ))
-        }
+        <div 
+          className="d-flex justify-content-around flex-column"
+          style={{minHeight: "50vh"}}
+        >
+          {
+            currentWeekMeals[day].map((item,index)=>(
+              <div xs="1" key={index} className="text-center border w-100 h-100"> {item.name} </div>
+            ))
+          }
+        </div>
       </div>
     )
   }
+
+  const renderParentRows = () => (
+    <Row className="gx-0">
+      <Col xs="3"></Col>
+      <Col xs="1" className="text-center border">  
+        Mon
+        {currentWeekMeals.length !== 0 && renderDayRow(0)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Tues 
+        {currentWeekMeals.length !== 0 && renderDayRow(1)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Wed 
+        {currentWeekMeals.length !== 0 && renderDayRow(2)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Thurs 
+        {currentWeekMeals.length !== 0 && renderDayRow(3)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Fri 
+        {currentWeekMeals.length !== 0 && renderDayRow(4)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Sat 
+        {currentWeekMeals.length !== 0 && renderDayRow(5)}
+      </Col>
+      <Col xs="1" className="text-center border"> 
+        Sun 
+        {currentWeekMeals.length !== 0 && renderDayRow(6)}
+      </Col>
+    </Row>
+  )
   
   //const renderRow = () => {
   //  console.log("renderrows");
   //};
 
   return (
-    <Container>
+    <Container fluid>
       {renderWeekChanger()}
-      {renderDayHeaders()}
-      {renderMealRows()}
+      {renderParentRows()}
     </Container>
   );
 };
