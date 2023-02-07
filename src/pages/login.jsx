@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import { LinkContainer } from 'react-router-bootstrap'
 import { useNavigate } from "react-router-dom";
-import { useCookies } from 'react-cookie'
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(['user_token']);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,10 +29,6 @@ const Login = () => {
       },
     }).then((response) => {
       console.log(response);
-      const cookie = response.headers['set-cookie'];
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (response.data.expires_in * 1000))
-      setCookie('user_token', cookie, { path: '/',  expires})
       if (response.status === 200) navigate("/dashboard");
       //return response.json(); // do something with response JSON
     });

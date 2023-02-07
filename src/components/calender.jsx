@@ -3,14 +3,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Stack from 'react-bootstrap/Stack';
-import { useCookies } from 'react-cookie'
 
 const Calender = () => {
   //const [currentWeek, setCurrentWeek] = useState(new Date());
   //const [selectedDay, setSelectedDay] = useState();
   // meals by day
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
-  const [cookies, setCookie] = useCookies(['user_token'])
   
   // x index = day, y index = meal number
   useEffect(() => {
@@ -18,8 +16,9 @@ const Calender = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "session-cookie": cookies['user_token'],
       },
+      withCredentials: true,
+      credentials: 'include',
     }).then((response) => {
       console.log(response);
     });
