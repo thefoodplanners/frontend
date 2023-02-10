@@ -4,6 +4,8 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
+import Image from 'react-bootstrap/Image';
+import SarabRunning1 from '../assets/sarab_running_1.jpeg';
 
 const Calender = () => {
   //const [currentWeek, setCurrentWeek] = useState(new Date());
@@ -54,6 +56,23 @@ const Calender = () => {
       </Row>
   ); 
 
+  const renderItem = (item,index) => {
+    return (
+      <div>
+        <div> {item.name} </div>
+        <div> {item.mealType} </div>
+        <div> {item.calories} </div>
+        <Image 
+          className="d-block w-100"
+          src={SarabRunning1} 
+          style={{maxHeight: "1vh", backgroundSize: "cover"}}
+          alt="First slide"
+          roundedCircle
+        />
+      </div>
+    )
+  }
+
   const renderDayRow = (day) => {
     //console.log(currentWeekMeals);
     return (
@@ -64,7 +83,7 @@ const Calender = () => {
         >
           {
             currentWeekMeals[day].map((item,index)=>(
-              <div xs="1" key={index} className="text-center border w-100 h-100"> {item.name} </div>
+              <div xs="1" key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white"> {renderItem(item,index)} </div>
             ))
           }
         </div>
@@ -77,38 +96,37 @@ const Calender = () => {
       return <Spinner></Spinner>;
     else
       return (
-        <Row className="gx-0">
-          <Col xs="3"></Col>
-          <Col xs="1" className="text-center border">  
-            Mon
+        <div className="row gx-0 shadow-lg seven-cols">
+          <div xs="1" className="col text-center">  
+            <div className="bg-primary"> Monday </div>
             {renderDayRow(0)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Tues 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Tuesday </div>
             {renderDayRow(1)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Wed 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Wednesday </div>
             {renderDayRow(2)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Thurs 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Thursday </div>
             {renderDayRow(3)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Fri 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Friday </div>
             {renderDayRow(4)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Sat 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Saterday </div>
             {renderDayRow(5)}
-          </Col>
-          <Col xs="1" className="text-center border"> 
-            Sun 
+          </div>
+          <div xs="1" className="col text-center"> 
+            <div className="bg-primary"> Sunday </div>
             {renderDayRow(6)}
             {/* currentWeekMeals.length !== 0 && renderDayRow(6) */}
-          </Col>
-        </Row>
+          </div>
+        </div>
       )
   }
   
