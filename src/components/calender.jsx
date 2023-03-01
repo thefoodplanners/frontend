@@ -177,9 +177,43 @@ const Calender = () => {
       <Button className="ms-auto btn" variant="primary" onClick={() => setShowSugestionModal(true)}>
         Add a new meal
       </Button>
+      <SugestionModal
+        show={showSugestionModal}
+        onHide={() => setShowSugestionModal(false)}
+      />
     </Container>
   );
 };
 
+const SugestionModal = (props) => {
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      className="shadow-lg"
+    >
+      <Modal.Header class="bg-primary" closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Add a meal?
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h4>Suggested meals</h4>
+        <ListGroup as="ol" numbered>
+          <ListGroup.Item as="li" active> Spaghetti Bolognese, 624 cals </ListGroup.Item>
+          <ListGroup.Item as="li"> Plain Chicken with rice and brocoli, 570 cals </ListGroup.Item>
+          <ListGroup.Item as="li"> Fish and chips, 620 cals </ListGroup.Item>
+        </ListGroup>
+    
+    
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
 
 export default Calender;
