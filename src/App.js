@@ -16,16 +16,14 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Container className="mb-4" fluid>
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path="home" element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="*" element={<NoPage />} />
-        </Routes>
-      </Container>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="home" element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="*" element={<NoPage />} />
+      </Routes>
       <Footer />
     </BrowserRouter>
   );

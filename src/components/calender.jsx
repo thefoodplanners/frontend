@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+//import Row from 'react-bootstrap/Row';
+//import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
 import Image from 'react-bootstrap/Image';
 import SarabRunning1 from '../assets/sarab_running_1.jpeg';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 const Calender = () => {
   //const [currentWeek, setCurrentWeek] = useState(new Date());
   //const [selectedDay, setSelectedDay] = useState();
   // meals by day
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
-  const [selectedDate, setSelectedDate] = useState();
+  const [fetchedMeals, setFetchedMeals] = useState(false);
+  //const [selectedDate, setSelectedDate] = useState();
+  const [showSugestionModal, setShowSugestionModal] = useState(false);
   
   // x index = day, y index = meal number
   useEffect(() => {
@@ -29,6 +33,7 @@ const Calender = () => {
       return response.json();
     }).then((data) => {
       console.log(data);
+      setFetchedMeals(true);
       setCurrentWeekMeals(data);
     });
     //setCurrentWeekMeals(
@@ -63,6 +68,7 @@ const Calender = () => {
         <div> {item.name} </div>
         <div> {item.mealType} </div>
         <div> {item.calories} cals </div>
+        {/*
         <Image 
           className="d-block w-100"
           src={SarabRunning1} 
@@ -70,12 +76,12 @@ const Calender = () => {
           alt="First slide"
           roundedCircle
         />
+        */}
       </div>
     )
   }
 
   const renderDayRow = (day) => {
-    //console.log(currentWeekMeals);
     return (
       <div>
         <div 
@@ -83,15 +89,31 @@ const Calender = () => {
           style={{minHeight: "50vh"}}
         >
           {
-            currentWeekMeals[day].length > 0 &&
+            // if we have fetched meals from the backend and we have meals to display
+            fetchedMeals && currentWeekMeals[day].length > 0 &&
             currentWeekMeals[day].map((item,index)=>(
-              <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white d-flex justify-content-center align-items-center"> {renderItem(item,index)} </div>
+              <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> {renderItem(item,index)} </div>
             ))
           }
 
           {
-            currentWeekMeals[day].length === 0 &&
-              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white d-flex justify-content-center align-items-center"> <i class="bi bi-plus"></i> </div>
+            // if we have fetched meals from the backend and we have no meals
+            fetchedMeals && currentWeekMeals[day].length === 0 &&
+              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> <i class="bi bi-plus"></i> </div>
+          }
+
+          {
+            // if we haven't fetched meals from the backend yet
+            !fetchedMeals &&
+              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> 
+                <Spinner 
+                  animation="border" 
+                  role="status"
+                  style={{
+                    maxWidth: "480px",
+                  }}
+                />
+              </div>
           }
         </div>
       </div>
@@ -99,68 +121,65 @@ const Calender = () => {
   }
   
   const getTotalDayCalories = (day) => {
+    // if we havent fetched meals yet return nothing
+    if (!fetchedMeals) return 0;
+    // if we have sum calories for all meals in the current day
     return currentWeekMeals[day].reduce((sum, item) => sum + item.calories, 0);
   }
 
   const renderParentRows = () => {
-    if (currentWeekMeals.length === 0)
-      return <Spinner></Spinner>;
-    else
-      return (
-        <div className="row gx-0 seven-cols">
-          <div className="col-xs-12 col-md-1 text-center">  
-            <div className="bg-primary"> Monday </div>
-            {renderDayRow(0)}
-            <div className=""> {getTotalDayCalories(0)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Tuesday </div>
-            {renderDayRow(1)}
-            <div className=""> {getTotalDayCalories(1)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Wednesday </div>
-            {renderDayRow(2)}
-            <div className=""> {getTotalDayCalories(2)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Thursday </div>
-            {renderDayRow(3)}
-            <div className=""> {getTotalDayCalories(3)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Friday </div>
-            {renderDayRow(4)}
-            <div className=""> {getTotalDayCalories(4)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Saterday </div>
-            {renderDayRow(5)}
-            <div className=""> {getTotalDayCalories(5)} cals </div>
-          </div>
-          <div className="col-xs-12 col-md-1 text-center"> 
-            <div className="bg-primary"> Sunday </div>
-            {renderDayRow(6)}
-            <div className=""> {getTotalDayCalories(6)} cals </div>
-            {/* currentWeekMeals.length !== 0 && renderDayRow(6) */}
-          </div>
+    return (
+      <div className="row gx-0 seven-cols">
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center">  
+          <div className="bg-primary"> Monday </div>
+          {renderDayRow(0)}
+          <div className=""> {getTotalDayCalories(0)} cals </div>
         </div>
-      )
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Tuesday </div>
+          {renderDayRow(1)}
+          <div className=""> {getTotalDayCalories(1)} cals </div>
+        </div>
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Wednesday </div>
+          {renderDayRow(2)}
+          <div className=""> {getTotalDayCalories(2)} cals </div>
+        </div>
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Thursday </div>
+          {renderDayRow(3)}
+          <div className=""> {getTotalDayCalories(3)} cals </div>
+        </div>
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Friday </div>
+          {renderDayRow(4)}
+          <div className=""> {getTotalDayCalories(4)} cals </div>
+        </div>
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Saterday </div>
+          {renderDayRow(5)}
+          <div className=""> {getTotalDayCalories(5)} cals </div>
+        </div>
+        <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
+          <div className="bg-primary"> Sunday </div>
+          {renderDayRow(6)}
+          <div className=""> {getTotalDayCalories(6)} cals </div>
+          {/* currentWeekMeals.length !== 0 && renderDayRow(6) */}
+        </div>
+      </div>
+    )
   }
   
-  //const renderRow = () => {
-  //  console.log("renderrows");
-  //};
-
   return (
     <Container fluid>
       {renderWeekChanger()}
       {renderParentRows()}
-      <Button className="ms-auto btn" variant="primary">
+      <Button className="ms-auto btn" variant="primary" onClick={() => setShowSugestionModal(true)}>
         Add a new meal
       </Button>
     </Container>
   );
 };
+
 
 export default Calender;
