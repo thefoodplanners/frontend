@@ -3,12 +3,23 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import Image from 'react-bootstrap/Image';
+import FoodGenLogo from '../assets/food_gen_logo_white.png';
 
 function NavBar() {
   return (
     <Navbar className="navbar navbar-dark bg-primary" expand="lg">
       <Container>
-        <Navbar.Brand as={Link} to="/" >The Food Planners</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" >
+          <Image 
+            className="d-block w-100"
+            src={FoodGenLogo} 
+            //style={{maxHeight: "50vh", backgroundSize: "cover"}}
+            alt="Food gen logo"
+            height="50"
+            width="10"
+          />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
