@@ -38,7 +38,7 @@ function NavBar() {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
-          <i className="bi bi-gear"></i>
+          <i className="text-white bi bi-gear"></i>
         </Navbar.Collapse>
       </Container>
     </Navbar>
