@@ -21,7 +21,8 @@ const Calender = () => {
   // x index = day, y index = meal number
   useEffect(() => {
     //2023-02-30
-    fetch(`http://localhost:9000/allMeals?weekDate=${selectedDate.getFullYear()}-${selectedDate.getMonth()+1}-${selectedDate.getDate()}`, {
+    const weekDate = getMonday(selectedDate);
+    fetch(`http://localhost:9000/allMeals?weekDate=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +44,7 @@ const Calender = () => {
     //    [], // wednesday
     //    [{name: "m1"},{name: "m2"},{name: "m3"},{name: "m4"},{name: "m5"},{name: "m6"}], // thursday
     //    [], // friday
-    //    [], // saterday
+    //    [], // saturday
     //    [], // sunday
     //  ]);
   }, [selectedDate]);
@@ -73,22 +74,32 @@ const Calender = () => {
     setCurrentWeekMeals([])
     setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() + value)))
   }
+  
+  const getMonday = (d) => {
+    d = new Date(d);
+    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+  }
 
   const renderItem = (item,index) => {
+    const imageRef = `data:image/jpeg;base64,${item.imageRef}`;
     return (
-      <div>
-        <div> {item.name} </div>
-        <div> {item.mealType} </div>
-        <div> {item.calories} cals </div>
+      <div
+        style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center"}}
+        className="w-100 d-flex flex-column justify-content-center align-items-center"
+      >
+        <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
+        <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
+        <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
         {/*
         <Image 
           className="d-block w-100"
-          src={SarabRunning1} 
+          src={`data:image/jpeg;base64,${item.imageRef}`} 
           style={{maxHeight: "1vh", backgroundSize: "cover"}}
           alt="First slide"
           roundedCircle
         />
-        */}
+      */}
       </div>
     )
   }
@@ -104,14 +115,20 @@ const Calender = () => {
             // if we have fetched meals from the backend and we have meals to display
             fetchedMeals && currentWeekMeals[day].length > 0 &&
             currentWeekMeals[day].map((item,index)=>(
-              <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> {renderItem(item,index)} </div>
+              <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-stretch align-items-stretch">
+                {renderItem(item,index)}
+              </div>
             ))
           }
 
           {
             // if we have fetched meals from the backend and we have no meals
             fetchedMeals && currentWeekMeals[day].length === 0 &&
-              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> <i className="bi bi-plus fs-1"></i> </div>
+              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> 
+                <Button className="btn" variant="primary" onClick={() => setShowSugestionModal(true)}>
+                  <i className="bi bi-plus fs-1"></i> 
+                </Button>
+              </div>
           }
 
           {
@@ -168,7 +185,7 @@ const Calender = () => {
           <div className=""> {getTotalDayCalories(4)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
-          <div className="bg-primary"> Saterday </div>
+          <div className="bg-primary"> Saturday </div>
           {renderDayRow(5)}
           <div className=""> {getTotalDayCalories(5)} cals </div>
         </div>
