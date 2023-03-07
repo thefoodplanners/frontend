@@ -6,13 +6,18 @@ footer {
   background-color: #343a40;
   min-height: $footerHeight;
   width: 100%;
-
   padding-top: 15px;
-  position: absolute;
   display: flex;
   align-items: center;
-  height: 4rem;
-  right: 0;
-  bottom: 0;
-  left: 0;
+
+}
+
+@media (min-width: 768px) {
+  footer {
+    position: fixed;
+    height: 4rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
