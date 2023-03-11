@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
 
-const SugestionModal = (props) => {
+const SuggestionModal = (props) => {
   const [addMealList, setAddMealList] = useState([]);
   const [selectedMealStates, setSelectedMealStates] = useState([false, false, false]);
   const [currentSuggestionsIndex, setCurrentSuggestionsIndex] = useState(0);
@@ -55,24 +55,27 @@ const SugestionModal = (props) => {
   const handleAddItem = () => {
     const currentSelectedIndex = selectedMealStates.indexOf(true);
     const mealToAdd = addMealList[currentSuggestionsIndex][currentSelectedIndex];
-    console.log(mealToAdd);
     props.onHide();
-    const currentDate = new Date();
+    const currentDate = new Date(props.date);
+    const body = {
+        date: `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()}`,
+        mealNum: 0,
+        recipeId: mealToAdd.id
+    };
+    console.log(JSON.stringify(body));
+    
     fetch("http://localhost:9000/addMealSlot", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        //"Content-Type": "application/json",
+        "Content-Type": "application/json;charset=utf-8",
       },
-      body: {
-        date: `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()}`,
-        mealNum: 0,
-        recipeId: mealToAdd.id,
-      },
+      body: JSON.stringify(body),
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
       //console.log(response);
-      return response.json();
+      //return response.json();
     }).then((data) => {
       console.log(data);
       // TODO add the item to table
@@ -126,7 +129,7 @@ const SugestionModal = (props) => {
           onClick={() => {handleAddItem()}}
           disabled={!selectedMealStates.includes(true)}
         > 
-          <i class="bi bi-plus fs-4"></i>
+          <i className="bi bi-plus fs-4"></i>
         </Button>
         {/* <Button onClick={props.onHide}>Close</Button> */}
       </Modal.Footer>
@@ -134,4 +137,4 @@ const SugestionModal = (props) => {
   );
 }
 
-export default SugestionModal;
+export default SuggestionModal;

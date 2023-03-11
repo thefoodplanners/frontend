@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
-import SugestionModal from './suggestionModal';
+import SuggestionModal from './suggestionModal';
 
 const Calender = () => {
   //const [currentWeek, setCurrentWeek] = useState(new Date());
@@ -14,7 +14,10 @@ const Calender = () => {
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
   const [fetchedMeals, setFetchedMeals] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date("2023-01-30"));
+  const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
   const [showSugestionModal, setShowSugestionModal] = useState(false);
+  // day
+  //const [suggestionAddDay, setSuggestionAddDay] = useState(-1);
   
   // x index = day, y index = meal number
   useEffect(() => {
@@ -85,6 +88,12 @@ const Calender = () => {
     var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + 6; // adjust when day is sunday
     return new Date(d.setDate(diff));
   }
+  
+  const getCurrentDay = (d, wkDay) => {
+    d = new Date(d);
+    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + wkDay; // adjust when day is the given date
+    return new Date(d.setDate(diff));
+  }
 
   const renderItem = (item,index) => {
     const imageRef = `data:image/jpeg;base64,${item.imageRef}`;
@@ -94,7 +103,7 @@ const Calender = () => {
         className="w-100"
       >
         <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
-          <i class="bi bi-x-lg"></i>
+          <i className="bi bi-x-lg"></i>
         </div>
         <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1"}}>
           <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
@@ -210,6 +219,12 @@ const getTotalWeekCalories = () => {
       </div>
     )
   }
+
+  const addFoodItem = (day) => {
+    setSuggestionSelectedDate(getCurrentDay(selectedDate, day));
+    // TODO avoid re-rendering modal between these 2 state changes
+    setShowSugestionModal(true);
+  }
   
   return (
     <Container fluid>
@@ -217,18 +232,20 @@ const getTotalWeekCalories = () => {
       {renderParentRows()}
       <div className="mt-3" />
       <div className="row gx-0 seven-cols">
-        <Button className="btn col-md-1" variant="primary" onClick={() => setShowSugestionModal(true)}>
-          Add a new meal
-        </Button>
-        <div className="col-md-8"> </div>
+        {
+            [0,1,2,3,4,5,6].map((item,index)=>(
+              <Button key={index} className="btn col-md-1" variant="primary" onClick={() => addFoodItem(index)}>
+                <i className="bi bi-plus fs-1"></i> 
+              </Button>
+            ))
+        }
         <div className="col-md-1"> {getTotalWeekCalories()} cals </div>
       </div>
-      <SugestionModal
+      <SuggestionModal
         show={showSugestionModal}
         onHide={() => setShowSugestionModal(false)}
+        date={suggestionSelectedDate}
       />
-      
-
     </Container>
   );
 };
