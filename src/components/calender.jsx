@@ -105,7 +105,7 @@ const Calender = () => {
         <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
           <i className="bi bi-x-lg"></i>
         </div>
-        <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1"}}>
+        <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
           <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
           <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
           <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
@@ -116,10 +116,10 @@ const Calender = () => {
 
   const renderDayRow = (day) => {
     return (
-      <div>
+      <div className="">  {/* style={{flex: 1, display: "flex", height: "1px" }}> */}
         <div 
-          className="d-flex justify-content-around flex-column"
-          style={{minHeight: "50vh"}}
+          className="d-flex flex-column overflow-auto"
+          style={{minHeight: "50vh", height: "0px"}}
         >
           {
             // if we have fetched meals from the backend and we have meals to display
@@ -165,17 +165,13 @@ const Calender = () => {
     // if we have sum calories for all meals in the current day
     return currentWeekMeals[day].reduce((sum, item) => sum + item.calories, 0);
   }
-
-
   
-const getTotalWeekCalories = () => {
-  // if we havent fetched meals yet return nothing
-  if (!fetchedMeals) return 0;
-  // if we have sum calories for all meals in the current day
-  return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.calories, 0), 0)
-  
-}
-
+  const getTotalWeekCalories = () => {
+    // if we havent fetched meals yet return nothing
+    if (!fetchedMeals) return 0;
+    // if we have sum calories for all meals in the current day
+    return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.calories, 0), 0)
+  }
 
   const renderParentRows = () => {
     return (
