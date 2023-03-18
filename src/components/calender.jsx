@@ -230,9 +230,11 @@ const Calender = () => {
       <div className="row gx-0 seven-cols">
         {
             [0,1,2,3,4,5,6].map((item,index)=>(
-              <Button key={index} className="btn col-md-1" variant="primary" onClick={() => addFoodItem(index)}>
-                <i className="bi bi-plus fs-1"></i> 
-              </Button>
+              <div className="d-flex justify-content-center align-items-center col-md-1">
+                <Button key={index} className="btn" variant="primary" onClick={() => addFoodItem(index)}>
+                  <i className="bi bi-plus fs-5"></i> 
+                </Button>
+              </div>
             ))
         }
         <div className="col-md-1"> {getTotalWeekCalories()} cals </div>
