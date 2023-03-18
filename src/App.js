@@ -15,15 +15,17 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 function App() {
   return (
     <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="home" element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="*" element={<NoPage />} />
-      </Routes>
+      <div style={{flexGrow: "1"}}>
+        <Header />
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="*" element={<NoPage />} />
+        </Routes>
+      </div>
       <Footer />
     </BrowserRouter>
   );
