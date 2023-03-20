@@ -15,13 +15,17 @@ const Calender = () => {
   const [fetchedMeals, setFetchedMeals] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date("2023-01-30"));
   const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
-  const [showSugestionModal, setShowSugestionModal] = useState(false);
+  const [showSugestionModal, setShowSuggestionModal] = useState(false);
   // day
   //const [suggestionAddDay, setSuggestionAddDay] = useState(-1);
   
   // x index = day, y index = meal number
   useEffect(() => {
     //2023-02-30
+    // fetchedMeals is a dependancy, but we only want to run after it changes from true -> false (after we add a meal)
+    if (fetchedMeals){
+      return;
+    }
     // fetch meals for calender
     const weekDate = getMonday(selectedDate);
     fetch(`http://localhost:9000/allMeals?weekDate=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
@@ -49,7 +53,7 @@ const Calender = () => {
     //    [], // saturday
     //    [], // sunday
     //  ]);
-  }, [selectedDate]);
+  }, [selectedDate, fetchedMeals]);
 
   // render the button used to move week in the calender
   const renderWeekChanger = () => (
@@ -135,7 +139,7 @@ const Calender = () => {
             // if we have fetched meals from the backend and we have no meals
             fetchedMeals && currentWeekMeals[day].length === 0 &&
               <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> 
-                <Button className="btn" variant="primary" onClick={() => setShowSugestionModal(true)} style={{backgroundColor: "#9EE493", borderColor: "#5db7de"}}>
+                <Button className="btn" variant="primary" onClick={() => addFoodItem(day)} style={{backgroundColor: "#9EE493", borderColor: "#5db7de"}}>
                   <i className="bi bi-plus fs-1"></i> 
                 </Button>
               </div>
@@ -219,7 +223,7 @@ const Calender = () => {
   const addFoodItem = (day) => {
     setSuggestionSelectedDate(getCurrentDay(selectedDate, day));
     // TODO avoid re-rendering modal between these 2 state changes
-    setShowSugestionModal(true);
+    setShowSuggestionModal(true);
   }
   
   return (
@@ -230,8 +234,8 @@ const Calender = () => {
       <div className="row gx-0 seven-cols">
         {
             [0,1,2,3,4,5,6].map((item,index)=>(
-              <div className="d-flex justify-content-center align-items-center col-md-1">
-                <Button key={index} className="btn" variant="primary" onClick={() => addFoodItem(index)}>
+              <div key={index} className="d-flex justify-content-center align-items-center col-md-1">
+                <Button className="btn" variant="primary" onClick={() => addFoodItem(index)}>
                   <i className="bi bi-plus fs-5"></i> 
                 </Button>
               </div>
@@ -241,8 +245,9 @@ const Calender = () => {
       </div>
       <SuggestionModal
         show={showSugestionModal}
-        onHide={() => setShowSugestionModal(false)}
+        onHide={() => setShowSuggestionModal(false)}
         date={suggestionSelectedDate}
+        setFetchedMeals={setFetchedMeals} 
       />
     </Container>
   );

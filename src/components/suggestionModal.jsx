@@ -74,6 +74,7 @@ const SuggestionModal = (props) => {
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
+      if (response.ok) props.setFetchedMeals(false)
       //console.log(response);
       //return response.json();
     }).then((data) => {
