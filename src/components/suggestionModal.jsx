@@ -14,7 +14,7 @@ const SuggestionModal = (props) => {
     //console.log("use effect run: ");
     //console.log(addMealList);
     // fetch meals we can add
-    fetch("http://localhost:9000/recommendMeals", {
+    fetch("http://localhost:9000/calendar/meals/recommendation", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const SuggestionModal = (props) => {
     };
     console.log(JSON.stringify(body));
     
-    fetch("http://localhost:9000/addMealSlot", {
+    fetch("http://localhost:9000/calendar/meals", {
       method: "POST",
       headers: {
         //"Content-Type": "application/json",

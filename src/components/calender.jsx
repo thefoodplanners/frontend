@@ -28,7 +28,7 @@ const Calender = () => {
     }
     // fetch meals for calender
     const weekDate = getMonday(selectedDate);
-    fetch(`http://localhost:9000/allMeals?weekDate=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
+    fetch(`http://localhost:9000/calendar/meals?weekDate=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
