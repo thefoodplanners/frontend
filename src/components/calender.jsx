@@ -111,10 +111,25 @@ const Calender = () => {
     return new Date(d.setDate(diff));
   }
 
-  const contentStyle = { background: "var(--bs-body-bg)" };
+  const getDiets = (recipe) => {
+    const diets = Object.entries(recipe.preferences);
+    return diets
+      // Only get the preferences which are true
+      .filter(pref => pref[1])
+      // Get the first part of the array. E.g. isVegan
+      .map(pref => pref[0])
+      // Remove the 'is' part from the string.
+      .map(pref => pref.slice(2))
+      .map(pref => pref.match(/[A-Z][a-z]+/g))
+      .map(prefArr => prefArr.join(" "))
+      .join(" | ")
+  }
 
-  const renderItem = (item,index) => {
-    const imageRef = `data:image/jpeg;base64,${item.imageRef}`;
+  const contentStyle = { background: "var(--bs-body-bg)", width: "max-content" };
+  const arrowStyle = { color: "var(--bs-body-bg)" };
+
+  const renderItem = (recipe,index) => {
+    const imageRef = `data:image/jpeg;base64,${recipe.imageRef}`;
     return (
       <div
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
@@ -125,14 +140,16 @@ const Calender = () => {
         </div>
 
         <Popup
-          trigger={open => (renderItemInfo(item, open))}
-          position="right center"
-          on="hover"
-          {...{ contentStyle }}
+          trigger={open => (renderItemInfo(recipe, open))}
+          position={['right center', 'bottom center']}
+          on={["hover", "focus"]}
+          {...{ contentStyle, arrowStyle }}
+          keepTooltipInside="#root"
         >
-          <div> <span style={{color: "#ff944d"}}>Fats:</span> {item.fats.toFixed(1)}g </div>
-          <div> <span style={{color: "#e60000"}}>Proteins:</span> {item.proteins.toFixed(1)}g </div>
-          <div> <span style={{color: "#ffcc00"}}>Carbohydrates:</span> {item.carbohydrates.toFixed(1)}g </div>
+        <div> <span style={{color: "#ff944d"}}><b>Fats:</b></span> {recipe.fats.toFixed(1)}g </div>
+        <div> <span style={{color: "#e60000"}}><b>Proteins:</b></span> {recipe.proteins.toFixed(1)}g </div>
+        <div> <span style={{color: "#cc9900"}}><b>Carbohydrates:</b></span> {recipe.carbohydrates.toFixed(1)}g </div>
+        <div> <b> {getDiets(recipe)} </b> </div>
         </Popup>
       </div>
     )
