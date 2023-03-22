@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 //import Row from 'react-bootstrap/Row';
 //import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -73,7 +75,17 @@ const Calender = () => {
           </div>
         </div>
       </div>
-  ); 
+  );
+
+  const renderItemInfo = (item, open) => {
+    return (
+    <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
+    </div>
+    )
+  };
   
   const updateDate = (value) => {
     setFetchedMeals(false);
@@ -99,6 +111,8 @@ const Calender = () => {
     return new Date(d.setDate(diff));
   }
 
+  const contentStyle = { background: "var(--bs-body-bg)" };
+
   const renderItem = (item,index) => {
     const imageRef = `data:image/jpeg;base64,${item.imageRef}`;
     return (
@@ -109,11 +123,17 @@ const Calender = () => {
         <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
           <i className="bi bi-x-lg"></i>
         </div>
-        <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
-        </div>
+
+        <Popup
+          trigger={open => (renderItemInfo(item, open))}
+          position="right center"
+          on="hover"
+          {...{ contentStyle }}
+        >
+          <div> <span style={{color: "#ff944d"}}>Fats:</span> {item.fats.toFixed(1)}g </div>
+          <div> <span style={{color: "#e60000"}}>Proteins:</span> {item.proteins.toFixed(1)}g </div>
+          <div> <span style={{color: "#ffcc00"}}>Carbohydrates:</span> {item.carbohydrates.toFixed(1)}g </div>
+        </Popup>
       </div>
     )
   }
