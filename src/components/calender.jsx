@@ -77,12 +77,12 @@ const Calender = () => {
       </div>
   );
 
-  const renderItemInfo = (item, open) => {
+  const renderItemInfo = (recipe) => {
     return (
     <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.name} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.mealType} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.calories} cals </div>
     </div>
     )
   };
@@ -120,7 +120,9 @@ const Calender = () => {
       .map(pref => pref[0])
       // Remove the 'is' part from the string.
       .map(pref => pref.slice(2))
+      // Split preferences to separate words. E.g. 'DiaryFree' to ['Diary', 'Free']
       .map(pref => pref.match(/[A-Z][a-z]+/g))
+      // Join separate words with spaces. E.g. ['Diary', 'Free'] to 'Diary Free'
       .map(prefArr => prefArr.join(" "))
       .join(" | ")
   }
@@ -130,6 +132,7 @@ const Calender = () => {
 
   const renderItem = (recipe,index) => {
     const imageRef = `data:image/jpeg;base64,${recipe.imageRef}`;
+    const itemInfo = renderItemInfo(recipe);
     return (
       <div
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
@@ -140,17 +143,43 @@ const Calender = () => {
         </div>
 
         <Popup
-          trigger={open => (renderItemInfo(recipe, open))}
+          trigger={itemInfo}
           position={['right center', 'bottom center']}
-          on={["hover", "focus"]}
+          on="hover"
           {...{ contentStyle, arrowStyle }}
           keepTooltipInside="#root"
+          nested
         >
-        <div> <span style={{color: "#ff944d"}}><b>Fats:</b></span> {recipe.fats.toFixed(1)}g </div>
-        <div> <span style={{color: "#e60000"}}><b>Proteins:</b></span> {recipe.proteins.toFixed(1)}g </div>
-        <div> <span style={{color: "#cc9900"}}><b>Carbohydrates:</b></span> {recipe.carbohydrates.toFixed(1)}g </div>
-        <div> <b> {getDiets(recipe)} </b> </div>
+          <div> <span style={{color: "#ff944d"}}><b>Fats:</b></span> {recipe.fats.toFixed(1)}g </div>
+          <div> <span style={{color: "#e60000"}}><b>Proteins:</b></span> {recipe.proteins.toFixed(1)}g </div>
+          <div> <span style={{color: "#cc9900"}}><b>Carbohydrates:</b></span> {recipe.carbohydrates.toFixed(1)}g </div>
+          <div> <b> {getDiets(recipe)} </b> </div>
+          <Popup
+            trigger={<a href="#">View More</a>}
+            on="click"
+            {...{ contentStyle }}
+            modal
+            nested
+          >
+            {close => (
+              <div>
+              <button onClick={close}> &times; </button>
+              <div> <b>Name:</b> {recipe.name} </div>
+              <div> {recipe.mealType} </div>
+              <div> {recipe.desc} </div>
+              <div> <b>Time to cook:</b> {recipe.time} min(s) </div>
+              <div> <b>Difficulty:</b> {recipe.difficulty} </div>
+              <div> <b>Ingredients:</b> {recipe.ingredients} </div>
+              <div> <b>Calories:</b> {recipe.calories} </div>
+              <div> <b>Fats:</b> {recipe.fats.toFixed(1)}g </div>
+              <div> <b>Proteins:</b> {recipe.proteins.toFixed(1)}g </div>
+              <div> <b>Carbohydrates:</b> {recipe.carbohydrates.toFixed(1)}g </div>
+              <div> <b> {getDiets(recipe)} </b> </div>
+              </div>
+            )}
+          </Popup>
         </Popup>
+
       </div>
     )
   }
