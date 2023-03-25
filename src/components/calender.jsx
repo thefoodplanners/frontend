@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 //import Row from 'react-bootstrap/Row';
 //import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -73,7 +75,17 @@ const Calender = () => {
           </div>
         </div>
       </div>
-  ); 
+  );
+
+  const renderItemInfo = (recipe) => {
+    return (
+    <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.name} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.mealType} </div>
+      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.calories} cals </div>
+    </div>
+    )
+  };
   
   const updateDate = (value) => {
     setFetchedMeals(false);
@@ -99,8 +111,30 @@ const Calender = () => {
     return new Date(d.setDate(diff));
   }
 
+  const getDiets = (recipe) => {
+    const diets = Object.entries(recipe.preferences);
+    return diets
+      // Only get the preferences which are true
+      .filter(pref => pref[1])
+      // Get the first part of the array. E.g. isVegan
+      .map(pref => pref[0])
+      // Remove the 'is' part from the string.
+      .map(pref => pref.slice(2))
+      // Split preferences to separate words. E.g. 'DiaryFree' to ['Diary', 'Free']
+      .map(pref => pref.match(/[A-Z][a-z]+/g))
+      // Join separate words with spaces. E.g. ['Diary', 'Free'] to 'Diary Free'
+      .map(prefArr => prefArr.join(" "))
+      .join(" | ")
+  }
+  const contentStyle = { background: "var(--bs-body-bg)", width: "max-content" };
+  const arrowStyle = { color: "var(--bs-body-bg)" };
+
   const renderItem = (item,index,day) => {
+    console.log(item);
     const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
+    //const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
+    const itemInfo = renderItemInfo(item.recipe);
+    const recipe = item.recipe;
     return (
       <div
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
@@ -110,11 +144,44 @@ const Calender = () => {
           {/* <Button variant="primary" size="sm"> */}
           <i className="bi bi-x-lg" style={{zIndex: "99", cursor: "pointer", height: "fit-content", textShadow: "0px 0px 4px white"}} onClick={() => deleteFoodItem(day, index)}></i>
         </div>
-        <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.name} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.mealType} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.calories} cals </div>
-        </div>
+
+        <Popup
+          trigger={itemInfo}
+          position={['right center', 'bottom center']}
+          on="hover"
+          {...{ contentStyle, arrowStyle }}
+          keepTooltipInside="#root"
+          nested
+        >
+          <div> <span style={{color: "#ff944d"}}><b>Fats:</b></span> {recipe.fats.toFixed(1)}g </div>
+          <div> <span style={{color: "#e60000"}}><b>Proteins:</b></span> {recipe.proteins.toFixed(1)}g </div>
+          <div> <span style={{color: "#cc9900"}}><b>Carbohydrates:</b></span> {recipe.carbohydrates.toFixed(1)}g </div>
+          <div> <b> {getDiets(recipe)} </b> </div>
+          <Popup
+            trigger={<a href="#">View More</a>}
+            on="click"
+            {...{ contentStyle }}
+            modal
+            nested
+          >
+            {close => (
+              <div>
+              <button onClick={close}> &times; </button>
+              <div> <b>Name:</b> {recipe.name} </div>
+              <div> {recipe.mealType} </div>
+              <div> {recipe.desc} </div>
+              <div> <b>Time to cook:</b> {recipe.time} min(s) </div>
+              <div> <b>Difficulty:</b> {recipe.difficulty} </div>
+              <div> <b>Ingredients:</b> {recipe.ingredients} </div>
+              <div> <b>Calories:</b> {recipe.calories} </div>
+              <div> <b>Fats:</b> {recipe.fats.toFixed(1)}g </div>
+              <div> <b>Proteins:</b> {recipe.proteins.toFixed(1)}g </div>
+              <div> <b>Carbohydrates:</b> {recipe.carbohydrates.toFixed(1)}g </div>
+              <div> <b> {getDiets(recipe)} </b> </div>
+              </div>
+            )}
+          </Popup>
+        </Popup>
       </div>
     )
   }
