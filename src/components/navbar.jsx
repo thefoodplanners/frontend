@@ -6,7 +6,12 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Image from 'react-bootstrap/Image';
 import FoodGenLogo from '../assets/food_gen_logo_white.png';
 
+import { useContext } from 'react';
+import { AuthContext } from './authContext';
+
 function NavBar() {
+  const { isAuthenticated, setAuth } = useContext(AuthContext);
+
   return (
     <Navbar className="navbar navbar-dark bg-primary" expand="lg">
       <Container>
@@ -21,22 +26,38 @@ function NavBar() {
           />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <LinkContainer to="/home">
-                <Nav.Link>Home</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/login">
-                <Nav.Link>Login</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/register">
-                <Nav.Link>Register</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/dashboard">
-                <Nav.Link>Dashboard</Nav.Link>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
+
+        { isAuthenticated && 
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <LinkContainer to="/home">
+                  <Nav.Link>Home</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/dashboard">
+                  <Nav.Link>Dashboard</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/logout">
+                  <Nav.Link>Logout</Nav.Link>
+              </LinkContainer>
+            </Nav>
+          </Navbar.Collapse>
+        }
+        { !isAuthenticated && 
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <LinkContainer to="/home">
+                  <Nav.Link>Home</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/login">
+                  <Nav.Link>Login</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/register">
+                  <Nav.Link>Register</Nav.Link>
+              </LinkContainer>
+            </Nav>
+          </Navbar.Collapse>
+        }
+
         <Navbar.Collapse className="justify-content-end">
           <i className="text-white bi bi-gear"></i>
         </Navbar.Collapse>

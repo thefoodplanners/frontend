@@ -5,11 +5,15 @@ import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import { LinkContainer } from 'react-router-bootstrap'
 import { useNavigate } from "react-router-dom";
+import { useContext } from 'react';
+
+import { AuthContext } from '../components/authContext';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated, setAuth } = useContext(AuthContext);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,7 +34,10 @@ const Login = () => {
       credentials: 'include',
     }).then((response) => {
       console.log(response);
-      if (response.status === 200) navigate("/dashboard");
+      if (response.status === 200){
+        setAuth(true);
+        navigate("/dashboard");
+      }
       //return response.json(); // do something with response JSON
     });
   }
