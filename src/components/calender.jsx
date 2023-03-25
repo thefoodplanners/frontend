@@ -99,20 +99,21 @@ const Calender = () => {
     return new Date(d.setDate(diff));
   }
 
-  const renderItem = (item,index) => {
-    const imageRef = `data:image/jpeg;base64,${item.imageRef}`;
+  const renderItem = (item,index,day) => {
+    const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
     return (
       <div
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
         className="w-100"
       >
         <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
-          <i className="bi bi-x-lg"></i>
+          {/* <Button variant="primary" size="sm"> */}
+          <i className="bi bi-x-lg" style={{zIndex: "99", cursor: "pointer", height: "fit-content", textShadow: "0px 0px 4px white"}} onClick={() => deleteFoodItem(day, index)}></i>
         </div>
         <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.name} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.mealType} </div>
-          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.calories} cals </div>
+          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.name} </div>
+          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.mealType} </div>
+          <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {item.recipe.calories} cals </div>
         </div>
       </div>
     )
@@ -130,7 +131,7 @@ const Calender = () => {
             fetchedMeals && currentWeekMeals[day].length > 0 &&
             currentWeekMeals[day].map((item,index)=>(
               <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-stretch align-items-stretch">
-                {renderItem(item,index)}
+                {renderItem(item,index,day)}
               </div>
             ))
           }
@@ -167,14 +168,14 @@ const Calender = () => {
     // if we havent fetched meals yet return nothing
     if (!fetchedMeals) return 0;
     // if we have sum calories for all meals in the current day
-    return currentWeekMeals[day].reduce((sum, item) => sum + item.calories, 0);
+    return currentWeekMeals[day].reduce((sum, item) => sum + item.recipe.calories, 0);
   }
   
   const getTotalWeekCalories = () => {
     // if we havent fetched meals yet return nothing
     if (!fetchedMeals) return 0;
     // if we have sum calories for all meals in the current day
-    return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.calories, 0), 0)
+    return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0), 0)
   }
 
   const renderParentRows = () => {
@@ -224,6 +225,27 @@ const Calender = () => {
     setSuggestionSelectedDate(getCurrentDay(selectedDate, day));
     // TODO avoid re-rendering modal between these 2 state changes
     setShowSuggestionModal(true);
+  }
+
+  const deleteFoodItem = (day, index) => {
+    console.log(currentWeekMeals[day])
+    console.log(currentWeekMeals[day][index])
+    const mealId = currentWeekMeals[day][index].mealSlotId
+    console.log(mealId);
+    fetch(`http://localhost:9000/calendar/meals/${mealId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      credentials: 'include',
+    }).then((response) => {
+      console.log(response);
+      if (response.ok) setFetchedMeals(false);
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+    });
   }
   
   return (
