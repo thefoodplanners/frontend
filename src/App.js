@@ -1,5 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Container } from "react-bootstrap"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Header from "./components/header";
 import Home from "./pages/home";
@@ -11,15 +10,14 @@ import NoPage from "./pages/nopage";
 import Progress from "./pages/progress";
 import Footer from "./components/footer";
 import AuthContextProvider from "./components/authContext";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
   return (
     <AuthContextProvider>
       <BrowserRouter>
-        <div style={{flexGrow: "1"}}>
+        <div style={{ flexGrow: "1" }}>
           <Header />
           <Routes>
             <Route index element={<Home />} />
