@@ -27,7 +27,7 @@ function NavBar() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        { isAuthenticated && 
+        { isAuthenticated &&
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <LinkContainer to="/home">
@@ -36,13 +36,16 @@ function NavBar() {
               <LinkContainer to="/dashboard">
                   <Nav.Link>Dashboard</Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/progress">
+                <Nav.Link>Progress</Nav.Link>
+              </LinkContainer>
               <LinkContainer to="/logout">
                   <Nav.Link>Logout</Nav.Link>
               </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         }
-        { !isAuthenticated && 
+        { !isAuthenticated &&
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <LinkContainer to="/home">

@@ -8,6 +8,7 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Logout from "./pages/logout";
 import NoPage from "./pages/nopage";
+import Progress from "./pages/progress";
 import Footer from "./components/footer";
 import AuthContextProvider from "./components/authContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,6 +28,7 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="logout" element={<Logout />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="progress" element={<Progress />} />
             <Route path="*" element={<NoPage />} />
           </Routes>
         </div>
