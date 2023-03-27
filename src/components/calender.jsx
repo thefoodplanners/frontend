@@ -18,6 +18,7 @@ const Calender = () => {
   const [selectedDate, setSelectedDate] = useState(new Date("2023-01-30"));
   const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
   const [showSugestionModal, setShowSuggestionModal] = useState(false);
+  const [dragMeal, setDragMeal] = useState({});
   // day
   //const [suggestionAddDay, setSuggestionAddDay] = useState(-1);
   
@@ -38,10 +39,8 @@ const Calender = () => {
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
-      console.log(response);
       return response.json();
     }).then((data) => {
-      console.log(data);
       setFetchedMeals(true);
       setCurrentWeekMeals(data);
     });
@@ -128,17 +127,64 @@ const Calender = () => {
   }
   const contentStyle = { background: "var(--bs-body-bg)", width: "max-content" };
   const arrowStyle = { color: "var(--bs-body-bg)" };
+  
+  // sync the status of current week meals with the backend
+  const syncCurrentWeekMeals = (newDay, newMealNumber) => {
+    const newDate = getCurrentDay(selectedDate, newDay);
+    //const mealsToSend = currentWeekMeals.map( (day) => day.map( (item) => item.mealSlotId ) );
+    ////return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0), 0)
+    //const body = {
+    //  meals: mealsToSend,
+    //  startDate: `${mondayDate.getFullYear()}-${mondayDate.getMonth()+1}-${mondayDate.getDate()}`,
+    //  endDate: `${sundayDate.getFullYear()}-${sundayDate.getMonth()+1}-${sundayDate.getDate()}`,
+    //}
+    const body = {
+      mealSlotId: dragMeal.item.mealSlotId,
+      mealNum: newMealNumber,
+      date: `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`,
+    }
+    fetch(`http://localhost:9000/calendar/meals/move`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(body),
+      withCredentials: true,
+      credentials: 'include',
+    }).then((response) => {
+      console.log(response);
+      console.log(response.ok);
+    })
+  }
 
   const renderItem = (item,index,day) => {
-    console.log(item);
     const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
     //const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
     const itemInfo = renderItemInfo(item.recipe);
     const recipe = item.recipe;
     return (
       <div
+        draggable
+        onDragStart={e => {
+          setDragMeal({ item: item, index: index, day: day });
+        }}
+        onDragOver={e => {
+          e.preventDefault();
+        }}
+        onDrop={e => {
+          // update current week meals with the food items new position
+          var newWeekMeals = currentWeekMeals.slice();
+          newWeekMeals[dragMeal.day] = currentWeekMeals[dragMeal.day].slice(0, dragMeal.index);
+          newWeekMeals[dragMeal.day] = newWeekMeals[dragMeal.day].concat(currentWeekMeals[dragMeal.day].slice(dragMeal.index + 1));
+          var newWeekMeals2 = newWeekMeals.slice();
+          newWeekMeals2[day] = newWeekMeals[day].slice(0, index);
+          newWeekMeals2[day].push(dragMeal.item);
+          newWeekMeals2[day] = newWeekMeals2[day].concat(newWeekMeals[day].slice(index));
+          setCurrentWeekMeals(newWeekMeals2)
+          syncCurrentWeekMeals(day, index);
+        }}
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
-        className="w-100"
+        className="funny w-100"
       >
         <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
           {/* <Button variant="primary" size="sm"> */}
@@ -206,7 +252,20 @@ const Calender = () => {
           {
             // if we have fetched meals from the backend and we have no meals
             fetchedMeals && currentWeekMeals[day].length === 0 &&
-              <div className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"> 
+              <div
+                onDragOver={e => {
+                  e.preventDefault();
+                }}
+                onDrop={e => {
+                  var newWeekMeals = currentWeekMeals.slice();
+                  newWeekMeals[dragMeal.day] = currentWeekMeals[dragMeal.day].slice(0, dragMeal.index);
+                  newWeekMeals[dragMeal.day] = newWeekMeals[dragMeal.day].concat(currentWeekMeals[dragMeal.day].slice(dragMeal.index + 1));
+                  newWeekMeals[day].push(dragMeal.item);
+                  setCurrentWeekMeals(newWeekMeals);
+                  syncCurrentWeekMeals(day, 0);
+                }}
+                className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"
+              > 
                 <Button className="btn" variant="primary" onClick={() => addFoodItem(day)} style={{backgroundColor: "#9EE493", borderColor: "#5db7de"}}>
                   <i className="bi bi-plus fs-1"></i> 
                 </Button>
@@ -295,10 +354,7 @@ const Calender = () => {
   }
 
   const deleteFoodItem = (day, index) => {
-    console.log(currentWeekMeals[day])
-    console.log(currentWeekMeals[day][index])
     const mealId = currentWeekMeals[day][index].mealSlotId
-    console.log(mealId);
     fetch(`http://localhost:9000/calendar/meals/${mealId}`, {
       method: "DELETE",
       headers: {
@@ -307,7 +363,7 @@ const Calender = () => {
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
-      console.log(response);
+      //console.log(response);
       if (response.ok) setFetchedMeals(false);
       return response.json();
     }).then((data) => {
