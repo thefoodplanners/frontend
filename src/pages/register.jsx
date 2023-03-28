@@ -52,17 +52,6 @@ const Register = () => {
     setChecked(updateChecked);
   };
 
-  const sendPreferences = () => {
-    const selectedPreferences = [];
-    checked.forEach((item, index) => {
-      if (item === true) {
-        selectedPreferences.push(preferences[index].preference);
-      }
-    });
-
-    console.log(selectedPreferences);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
@@ -70,27 +59,26 @@ const Register = () => {
       username: email,
       password: password,
       preferences: {
-        isVegan: false,
-        isVegetarian: false,
-        isKeto: true,
-        isLactose: false,
-        isHalal: true,
-        isKosher: false,
-        isDairyFree: true,
-        isLowCarbs: false,
-        isGlutenFree: true,
-        isPeanuts: true,
-        isEggs: true,
-        isFish: false,
-        isTreeNuts: false,
-        isSoy: false,
-        maxCalories: 2000,
+        isVegan: checked[0],
+        isVegetarian: checked[1],
+        isKeto: checked[2],
+        isLactose: checked[3],
+        isHalal: checked[4],
+        isKosher: checked[5],
+        isDairyFree: checked[6],
+        isLowCarbs: checked[7],
+        isGlutenFree: checked[8],
+        isPeanuts: checked[9],
+        isEggs: checked[10],
+        isFish: checked[11],
+        isTreeNuts: checked[12],
+        isSoy: checked[13],
+        targetCalories: calories,
       },
     };
 
     console.log(email);
     console.log(password);
-    sendPreferences();
 
     fetch("http://localhost:9000/register", {
       method: "POST",
@@ -103,7 +91,6 @@ const Register = () => {
       console.log(response);
       if (response.status === 200) {
         navigate("/dashboard");
-        sendPreferences();
       }
       //return response.json(); // do something with response JSON
     });
@@ -202,7 +189,7 @@ const Register = () => {
                   Back
                 </Button>
                 <div className="max-calories">
-                  <Form.Group controlId="formBasicPassword">
+                  <Form.Group controlId="formMaxCalories">
                     <Form.Label>Maximum Daily Calories</Form.Label>
                     <Form.Control
                       type="input"
