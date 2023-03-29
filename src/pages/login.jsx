@@ -48,9 +48,9 @@ const Login = () => {
       <Card.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Username</Form.Label>
             <Form.Control
-              type="email"
+              type="text"
               placeholder="Enter email"
               name="email"
               value={email}

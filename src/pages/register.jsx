@@ -4,9 +4,8 @@ import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import ToggleButton from "react-bootstrap/ToggleButton";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+// import ToggleButton from "react-bootstrap/ToggleButton";
+// import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import "../scss/register.scss";
 
 const preferences = [
@@ -29,9 +28,9 @@ const preferences = [
 const Register = () => {
   const [formStep, setFormStep] = useState(0);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [calories, setCalories] = useState(0);
-  const navigate = useNavigate();
   const [checked, setChecked] = useState(
     new Array(preferences.length).fill(false)
   );
@@ -50,13 +49,14 @@ const Register = () => {
     );
 
     setChecked(updateChecked);
+    console.log(updateChecked);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
       email: email,
-      username: email,
+      username: username,
       password: password,
       preferences: {
         isVegan: checked[0],
@@ -73,7 +73,7 @@ const Register = () => {
         isFish: checked[11],
         isTreeNuts: checked[12],
         isSoy: checked[13],
-        targetCalories: calories,
+        targetCalories: Number(calories),
       },
     };
 
@@ -90,7 +90,7 @@ const Register = () => {
     }).then((response) => {
       console.log(response);
       if (response.status === 200) {
-        navigate("/dashboard");
+        completeFormStep();
       }
       //return response.json(); // do something with response JSON
     });
@@ -116,7 +116,16 @@ const Register = () => {
                     We'll never share your email with anyone else.
                   </Form.Text>
                 </Form.Group>
-
+                <Form.Group className="mb-3" controlId="formBasicUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username"
+                    name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
@@ -156,17 +165,15 @@ const Register = () => {
                     {preferences.map(({ preference }, index) => {
                       return (
                         <li key={index}>
-                          <ToggleButtonGroup type="checkbox" className="mb-1">
-                            <ToggleButton
-                              variant="outline-primary"
-                              id={`tbg-check-${index}`}
-                              value={preference}
-                              checked={checked[index]}
-                              onChange={() => handleChange(index)}
-                            >
-                              {preference}
-                            </ToggleButton>
-                          </ToggleButtonGroup>
+                          <input
+                            type="checkbox"
+                            id={`custom-checkbox-${index}`}
+                            name={preference}
+                            value={preference}
+                            checked={checked[index]}
+                            onChange={() => handleChange(index)}
+                          />
+                          <label>{preference}</label>
                         </li>
                       );
                     })}
@@ -218,9 +225,10 @@ const Register = () => {
                 </div>
               </>
             )}
+            {formStep === 3 && (
+              <h1 className="success">Account Successfully Created!</h1>
+            )}
           </Form>
-        </Card.Body>
-        <Card.Body>
           <LinkContainer to="/login">
             <Button variant="secondary">Go to Login</Button>
           </LinkContainer>
