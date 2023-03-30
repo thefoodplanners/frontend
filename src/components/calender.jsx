@@ -181,7 +181,7 @@ const Calender = () => {
           newWeekMeals2[day].push(dragMeal.item);
           newWeekMeals2[day] = newWeekMeals2[day].concat(newWeekMeals[day].slice(index));
           setCurrentWeekMeals(newWeekMeals2)
-          syncCurrentWeekMeals(day, index);
+          syncCurrentWeekMeals(day, index + 1);
         }}
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
         className="funny w-100"
@@ -262,7 +262,7 @@ const Calender = () => {
                   newWeekMeals[dragMeal.day] = newWeekMeals[dragMeal.day].concat(currentWeekMeals[dragMeal.day].slice(dragMeal.index + 1));
                   newWeekMeals[day].push(dragMeal.item);
                   setCurrentWeekMeals(newWeekMeals);
-                  syncCurrentWeekMeals(day, 0);
+                  syncCurrentWeekMeals(day, 1);
                 }}
                 className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"
               > 
