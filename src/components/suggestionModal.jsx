@@ -3,13 +3,20 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
+import AsyncSelect from 'react-select/async';
 
 const SuggestionModal = (props) => {
   const [addMealList, setAddMealList] = useState([]);
+  // state for suggestions
   const [selectedMealStates, setSelectedMealStates] = useState([false, false, false]);
   const [currentSuggestionsIndex, setCurrentSuggestionsIndex] = useState(0);
+  
+  // state for search bar
+  const [searchOptions, setSearchOptions] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // TODO why does this keep running over and over?
+  // fetch options for suggested options
   useEffect(() => {
     //console.log("use effect run: ");
     //console.log(addMealList);
@@ -25,11 +32,32 @@ const SuggestionModal = (props) => {
       //console.log(response);
       return response.json();
     }).then((data) => {
-      //console.log(data);
+      console.log(data);
       setAddMealList(data);
     });
   }, []);
   //}, [addMealList]);
+
+  // fetch options for search
+  const loadSearchOptions = (input, callback) => {
+    fetch(`http://localhost:9000/search?query=${input}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      credentials: 'include',
+    }).then((response) => {
+      //console.log(response);
+      return response.json();
+    }).then((data) => {
+      data = data.map((item) => ({
+        label: item.name,
+        value: item.id,
+      }));
+      callback(data)
+    });
+  }
   
   const handleItemSelected = (listGroupIndex) => {
     const newSelectedMealStates = [...selectedMealStates];
@@ -62,7 +90,7 @@ const SuggestionModal = (props) => {
         mealNum: 0,
         recipeId: mealToAdd.id
     };
-    console.log(JSON.stringify(body));
+    //console.log(JSON.stringify(body));
     
     fetch("http://localhost:9000/calendar/meals", {
       method: "POST",
@@ -77,9 +105,6 @@ const SuggestionModal = (props) => {
       if (response.ok) props.setFetchedMeals(false)
       //console.log(response);
       //return response.json();
-    }).then((data) => {
-      console.log(data);
-      // TODO add the item to table
     });
   }
   
@@ -124,6 +149,7 @@ const SuggestionModal = (props) => {
         <Button onClick={() => {handleNextSuggestionsClick(-1)}}>Previous suggestions</Button>
         <Button onClick={() => {handleNextSuggestionsClick(1)}}>More suggestions</Button>
       </div>
+      <AsyncSelect loadOptions={loadSearchOptions} className="mt-5" />
       </Modal.Body>
       <Modal.Footer>
         <Button 
