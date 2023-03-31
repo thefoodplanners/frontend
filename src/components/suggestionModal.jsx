@@ -17,8 +17,8 @@ const SuggestionPane = (props) => {
   useEffect(() => {
     //console.log("use effect run: ");
     // fetch meals we can add
-    const properDate = props.date.toISOString().split("T")[0];
-    fetch(`http://localhost:9000/calendar/meals/recommendation?date=${properDate}`, {
+    const date = props.date;
+    fetch(`http://localhost:9000/calendar/meals/recommendation?date=${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
