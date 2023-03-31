@@ -9,13 +9,22 @@ import Button from 'react-bootstrap/Button';
 
 import SuggestionModal from './suggestionModal';
 
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
+
 const Calender = () => {
   //const [currentWeek, setCurrentWeek] = useState(new Date());
   //const [selectedDay, setSelectedDay] = useState();
   // meals by day
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
   const [fetchedMeals, setFetchedMeals] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date("2023-01-30"));
+  const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
   const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
   const [showSugestionModal, setShowSuggestionModal] = useState(false);
   const [dragMeal, setDragMeal] = useState({});
@@ -127,6 +136,36 @@ const Calender = () => {
   }
   const contentStyle = { background: "var(--bs-body-bg)", width: "max-content" };
   const arrowStyle = { color: "var(--bs-body-bg)" };
+
+  const getMacrosPieChartData = (recipe) => {
+    const data = {
+      labels: ["Fats (g)", "Proteins (g)", "Carbohydrates (g)"],
+      datasets: [
+        {
+          label: "Macro nutrients",
+          data: [
+            recipe.fats.toFixed(1),
+            recipe.proteins.toFixed(1),
+            recipe.carbohydrates.toFixed(1)
+          ],
+          backgroundColor: [
+            "rgba(255, 148, 77, 0.2)",
+            "rgba(230, 0, 0, 0.2)",
+            "rgba(204, 153, 0, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 148, 77, 1)",
+            "rgba(230, 0, 0, 1)",
+            "rgba(204, 153, 0, 1)",
+          ],
+          borderWidth: 1,
+        }
+      ],
+    };
+
+    return <Pie data={data} />;
+  };
+
   
   // sync the status of current week meals with the backend
   const syncCurrentWeekMeals = (newDay, newMealNumber) => {
@@ -195,6 +234,7 @@ const Calender = () => {
           trigger={itemInfo}
           position={['right center', 'bottom center']}
           on="hover"
+          mouseEnterDelay={200}
           {...{ contentStyle, arrowStyle }}
           keepTooltipInside="#root"
           nested
@@ -206,13 +246,14 @@ const Calender = () => {
           <Popup
             trigger={<a href="#">View More</a>}
             on="click"
-            {...{ contentStyle }}
+            contentStyle={{ background: "var(--bs-body-bg)" }}
             modal
             nested
           >
             {close => (
               <div>
-              <button onClick={close}> &times; </button>
+              <div style={{ float: "left", borderRight: "1px solid gray", padding: "5px", width: "65%" }}>
+              <button onClick={close}> &times; </button>/
               <div> <b>Name:</b> {recipe.name} </div>
               <div> {recipe.mealType} </div>
               <div> {recipe.desc} </div>
@@ -220,10 +261,9 @@ const Calender = () => {
               <div> <b>Difficulty:</b> {recipe.difficulty} </div>
               <div> <b>Ingredients:</b> {recipe.ingredients} </div>
               <div> <b>Calories:</b> {recipe.calories} </div>
-              <div> <b>Fats:</b> {recipe.fats.toFixed(1)}g </div>
-              <div> <b>Proteins:</b> {recipe.proteins.toFixed(1)}g </div>
-              <div> <b>Carbohydrates:</b> {recipe.carbohydrates.toFixed(1)}g </div>
               <div> <b> {getDiets(recipe)} </b> </div>
+              </div>
+              <div style={{ width: "200px", height: "200px", float: "left" }}> {getMacrosPieChartData(recipe)} </div>
               </div>
             )}
           </Popup>
@@ -357,15 +397,12 @@ const Calender = () => {
     const mealId = currentWeekMeals[day][index].mealSlotId
     fetch(`http://localhost:9000/calendar/meals/${mealId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
       //console.log(response);
       if (response.ok) setFetchedMeals(false);
-      return response.json();
+      return response.text();
     }).then((data) => {
       console.log(data);
     });
