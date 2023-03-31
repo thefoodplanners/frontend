@@ -1,74 +1,67 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
-import Stack from 'react-bootstrap/Stack';
-import { LinkContainer } from 'react-router-bootstrap'
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
+import Stack from "react-bootstrap/Stack";
+import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useContext } from 'react';
-
-import { AuthContext } from '../components/authContext';
+import { useContext } from "react";
+import { AuthContext } from "../components/authContext";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { isAuthenticated, setAuth } = useContext(AuthContext);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
-      username: email,
-      password: password
-    }
-    
-    console.log(email);
-    console.log(password);
-    
+      username: username,
+      password: password,
+    };
+
     fetch("http://localhost:9000/login", {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     }).then((response) => {
       console.log(response);
-      if (response.status === 200){
+      if (response.status === 200) {
         setAuth(true);
         navigate("/dashboard");
       }
       //return response.json(); // do something with response JSON
     });
-  }
+  };
 
   return (
     <Card className="cardContainer">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control 
-              type="email" 
-              placeholder="Enter email" 
-              name="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+        <Form noValidate onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formBasicUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control 
-              type="password" 
-              placeholder="Password" 
+            <Form.Control
+              type="password"
+              placeholder="Password"
               name="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
           <Stack direction="horizontal" gap={3}>
@@ -76,14 +69,14 @@ const Login = () => {
               <Form.Check type="checkbox" label="Remember me" />
             </Form.Group>
             <Button className="ms-auto btn" variant="primary" type="submit">
-              Login 
+              Login
             </Button>
           </Stack>
         </Form>
       </Card.Body>
       <Card.Body>
         <LinkContainer to="/register">
-          <Button variant="secondary">Register</Button>
+          <Button variant="secondary">Go to Register</Button>
         </LinkContainer>
       </Card.Body>
     </Card>
