@@ -17,7 +17,8 @@ const SuggestionPane = (props) => {
   useEffect(() => {
     //console.log("use effect run: ");
     // fetch meals we can add
-    fetch("http://localhost:9000/calendar/meals/recommendation", {
+    const properDate = props.date.toISOString().split("T")[0];
+    fetch(`http://localhost:9000/calendar/meals/recommendation?date=${properDate}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +71,9 @@ const SuggestionPane = (props) => {
         <ListGroup as="ol" numbered>
           {
             addMealList[currentSuggestionsIndex].map((item,index) => (
-              <ListGroup.Item key={index} as="li" active={selectedMealStates[index]} onClick={() => handleItemSelected(index)}> {item.name} </ListGroup.Item>
+              <ListGroup.Item key={index} as="li" active={selectedMealStates[index]} onClick={() => handleItemSelected(index)}>
+                {item.name} - {item.calories}cals
+              </ListGroup.Item>
             ))
           }
         </ListGroup>
@@ -195,7 +198,7 @@ const SuggestionModal = (props) => {
           <Button onClick={() => {setCurrentPane("search")}} disabled={currentPane === "search"}>Search Meal</Button>
         </div>
         { currentPane === "suggestion" &&
-          <SuggestionPane setMealToAdd={setMealToAdd}/>
+          <SuggestionPane setMealToAdd={setMealToAdd} date={props.date}/>
         }
         { currentPane === "search" &&
           <SearchPane setMealToAdd={setMealToAdd}/>
