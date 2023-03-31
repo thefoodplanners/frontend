@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -104,26 +105,14 @@ const ProgressChart = () => {
   ];
 
   const changeTarget = (dateType) => {
-    let conversion = targetConversion.filter(conversion => conversion[0] == currentDateType && conversion[1] == dateType);
+    let conversion = targetConversion.filter(conversion => conversion[0] === currentDateType && conversion[1] === dateType);
     let newTarget = target * conversion[0][2];
     setTarget(Math.round(newTarget));
   }
 
   const getAverage = (data) => {
-    if (data.length == 0) return 0;
+    if (data.length === 0) return 0;
     else return data.reduce((a,b) => a + b) / data.length;
-  };
-
-  const getMonday = (d) => {
-    d = new Date(d);
-    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1); // adjust when day is monday
-    return new Date(d.setDate(diff));
-  };
-
-  const getSunday = (d) => {
-    d = new Date(d);
-    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + 6; // adjust when day is sunday
-    return new Date(d.setDate(diff));
   };
 
   const updateDate = (isPrev) => {
@@ -154,8 +143,6 @@ const ProgressChart = () => {
     };
     setSelectedDate(newDate);
   };
-
-
 
   const macros = (index, dayName) => {
     let macroObj = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(currentMetrics.metrics[index]);
@@ -270,15 +257,38 @@ const ProgressChart = () => {
         font: {
           size: 30
         }
+      },
+      datalabels: {
+        color: "white",
+        padding: 6,
+        font: {
+          weight: "bold",
+          size: 14
+        },
+        borderColor: 'white',
+        borderRadius: 25,
+        borderWidth: 2,
+        backgroundColor: "#333333",
+        display: function(context) {
+          return context.dataset.data[context.dataIndex] > 3;
+        },
+        formatter: (value, ctx) => {
+          return value + "g";
+        }
+      },
+      tooltip: {
+        callbacks: {
+          title: (data) => {return ""},
+          label: (data) => {return `${data.label}: ${data.raw}g`}
+        }
       }
     }
   }
 
   const dataMacros = {
-      labels: ["Fats (g)", "Proteins (g)", "Carbohydrates (g)"],
+      labels: ["Fats", "Proteins", "Carbohydrates"],
       datasets: [
         {
-          label: "Macro nutrients",
           data: macrosData.slice(0, -1),
           backgroundColor: [
             "rgba(255, 148, 77, 0.7)",
@@ -324,8 +334,8 @@ const ProgressChart = () => {
         </ToggleButtonGroup>
         <Line options={optionsCalories} data={dataCalories} />
       </div>
-      <div style={{ width: "20vw", height: "500px", float: "left", margin: "200px 0 0 75px" }}>
-        <Pie options={optionsMacros} data={dataMacros} />
+      <div style={{ width: "20vw", height: "500px", float: "left", margin: "200px 0 0 35px" }}>
+        <Pie options={optionsMacros} data={dataMacros} plugins={[ChartDataLabels]} />
       </div>
     </div>
   );
