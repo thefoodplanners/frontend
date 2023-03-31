@@ -6,11 +6,10 @@ import Stack from "react-bootstrap/Stack";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-
 import { AuthContext } from "../components/authContext";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { isAuthenticated, setAuth } = useContext(AuthContext);
@@ -18,12 +17,9 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
-      username: email,
+      username: username,
       password: password,
     };
-
-    console.log(email);
-    console.log(password);
 
     fetch("http://localhost:9000/login", {
       method: "POST",
@@ -46,19 +42,16 @@ const Login = () => {
     <Card className="cardContainer">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form noValidate onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">

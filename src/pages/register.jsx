@@ -4,8 +4,6 @@ import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
-// import ToggleButton from "react-bootstrap/ToggleButton";
-// import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import "../scss/register.scss";
 
 const preferences = [
@@ -49,7 +47,6 @@ const Register = () => {
     );
 
     setChecked(updateChecked);
-    console.log(updateChecked);
   };
 
   const handleSubmit = (e) => {
@@ -92,7 +89,6 @@ const Register = () => {
       if (response.status === 200) {
         completeFormStep();
       }
-      //return response.json(); // do something with response JSON
     });
   };
   return (
@@ -213,6 +209,7 @@ const Register = () => {
                     controlId="formBasicCheckboxLegal"
                   >
                     <Form.Check
+                      required
                       type="checkbox"
                       label="I accept the terms and conditions"
                     />
