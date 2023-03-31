@@ -26,7 +26,7 @@ const Calender = () => {
   const [fetchedMeals, setFetchedMeals] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
   const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
-  const [showSugestionModal, setShowSuggestionModal] = useState(false);
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
   const [dragMeal, setDragMeal] = useState({});
   // day
   //const [suggestionAddDay, setSuggestionAddDay] = useState(-1);
@@ -426,7 +426,7 @@ const Calender = () => {
         <div className="col-md-1"> {getTotalWeekCalories()} cals </div>
       </div>
       <SuggestionModal
-        show={showSugestionModal}
+        show={showSuggestionModal}
         onHide={() => setShowSuggestionModal(false)}
         date={suggestionSelectedDate}
         setFetchedMeals={setFetchedMeals} 
