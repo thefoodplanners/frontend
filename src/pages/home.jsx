@@ -1,59 +1,48 @@
-import Carousel from 'react-bootstrap/Carousel';
-//import MealPlannerImage from '../assets/meal_planner_image.png';
-import SarabRunning1 from '../assets/sarab_running_1.jpeg';
-import SarabRunning2 from '../assets/sarab_running_2.jpeg';
-//import SarabRunning3 from '../assets/sarab_running_3.jpeg';
-import FoodImage from '../assets/frontpage_food_image.jpeg';
-//import DataImage from '../assets/sspic3.jpeg';
-
-import Image from 'react-bootstrap/Image';
+import Carousel from "react-bootstrap/Carousel";
+import Cook from "../assets/cook.jpg";
+import Conquer from "../assets/conquer.jpg";
+import FoodImage1 from "../assets/meal_planner1.jpg";
+import Image from "react-bootstrap/Image";
+import "../scss/home.scss";
 
 const Home = () => {
   return (
-    <div>
-      <Carousel>
-        <Carousel.Item>
-          <Image 
-            className="d-block w-100"
-            src={SarabRunning1} 
-            style={{maxHeight: "50vh", backgroundSize: "cover", objectFit: "cover"}}
-            alt="First slide"
-          />
-          <Carousel.Caption>
-            <h3>First slide label</h3>
-            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <Image 
-            className="d-block w-100 100px img-responsive"
-            src={SarabRunning2} 
-            style={{maxHeight: "50vh", backgroundSize: "cover", objectFit: "cover"}}
-            alt="Second slide"
-          />
-          <Carousel.Caption>
-            <h3>Second slide label</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <Image 
-            className="d-block w-100 h-50"
-            src={FoodImage} 
-            style={{maxHeight: "50vh", backgroundSize: "cover", objectFit: "cover"}}
-            alt="Third slide"
-          />
-          <Carousel.Caption>
-            <h3>Third slide label</h3>
-            <p>
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-            </p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
-    </div>
+    <Carousel interval={null}>
+      <Carousel.Item>
+        <Image className="image" src={FoodImage1} alt="First slide" />
+        <Carousel.Caption className="caption">
+          <h1>Create</h1>
+          <p>
+            Start by telling us about yourself, your diet preferences, and your
+            goals. We'll suggest and recommend meals specific to your needs in
+            seconds! You always have the option to tweak your settings later.
+          </p>
+        </Carousel.Caption>
+      </Carousel.Item>
+      <Carousel.Item>
+        <Image className="image" src={Cook} alt="Second slide" />
+        <Carousel.Caption className="caption">
+          <h1>Cook</h1>
+          <p>
+            Enjoy making and eating delicious meals without the stress of
+            planning. Not only will you know you're eating better, you'll have
+            more time and energy for other things.
+          </p>
+        </Carousel.Caption>
+      </Carousel.Item>
+      <Carousel.Item>
+        <Image className="image" src={Conquer} alt="Third slide" />
+        <Carousel.Caption className="caption">
+          <h1>Conquer!</h1>
+          <p>
+            Make adjustments to your preferences, discover new meals, or add
+            meals of your own to your meal plan. Review nutrition stats, compare
+            your progress, and achieve your goals!
+          </p>
+        </Carousel.Caption>
+      </Carousel.Item>
+    </Carousel>
   );
-
 };
 
 export default Home;
