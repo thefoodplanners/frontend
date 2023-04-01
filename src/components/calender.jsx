@@ -71,6 +71,9 @@ const Calender = () => {
         {/* <div className="col-xs-0 col-md-1"></div> */}
         <div className="col-xs-12 col-md-4">
           <div className="d-flex justify-content-between align-items-center">
+            <Button className="btn">
+              <i className="bi bi-arrow-clockwise" onClick={() => generateMeals()}></i>
+            </Button>
             <Button className="btn" onClick={() => updateDate(-7)}>
               <i className="bi bi-arrow-left"></i>
             </Button>
@@ -166,6 +169,20 @@ const Calender = () => {
     return <Pie data={data} />;
   };
 
+  const generateMeals = () => {
+    const weekDate = getMonday(selectedDate);
+    fetch(`http://localhost:9000/calendar/meals/weekly-meal-plan?date=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      withCredentials: true,
+      credentials: 'include'
+    }).then((response) => {
+      setFetchedMeals(false);
+      setCurrentWeekMeals([]);
+    });
+  };
   
   // sync the status of current week meals with the backend
   const syncCurrentWeekMeals = (newDay, newMealNumber) => {
@@ -234,7 +251,7 @@ const Calender = () => {
           trigger={itemInfo}
           position={['right center', 'bottom center']}
           on="hover"
-          mouseEnterDelay={200}
+          mouseEnterDelay={500}
           {...{ contentStyle, arrowStyle }}
           keepTooltipInside="#root"
           nested
