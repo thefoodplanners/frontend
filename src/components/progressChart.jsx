@@ -42,6 +42,7 @@ const ProgressChart = () => {
   const [currentMacros, setCurrentMacros] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
 
+  // Fetches metrics.
   useEffect(() => {
     if (fetchedMetrics) {
       return;
@@ -70,6 +71,7 @@ const ProgressChart = () => {
     setCurrentDateType(dateType);
   }
 
+  // Fetches target calories.
   useEffect(() => {
   if (fetchedTarget) {
       return;
@@ -89,6 +91,7 @@ const ProgressChart = () => {
     });
   }, [target, fetchedTarget]);
 
+  // Used by changeTarget. Conversion rate for target calories.
   const targetConversion = [
     ["day", "week", 7],
     ["day", "month", 30.5],
@@ -104,6 +107,7 @@ const ProgressChart = () => {
     ["year", "month", 1/12]
   ];
 
+  // Changes target calories based on time unit selected.
   const changeTarget = (dateType) => {
     let conversion = targetConversion.filter(conversion => conversion[0] === currentDateType && conversion[1] === dateType);
     let newTarget = target * conversion[0][2];
@@ -115,6 +119,7 @@ const ProgressChart = () => {
     else return data.reduce((a,b) => a + b) / data.length;
   };
 
+  // Changes date for that time unit.
   const updateDate = (isPrev) => {
     setFetchedMetrics(false);
     let value;
@@ -144,6 +149,7 @@ const ProgressChart = () => {
     setSelectedDate(newDate);
   };
 
+  // Extracts macros fields in main json currentMetrics.
   const macros = (index, dayName) => {
     let macroObj = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(currentMetrics.metrics[index]);
     macroObj.day = dayName;
@@ -258,6 +264,7 @@ const ProgressChart = () => {
           size: 30
         }
       },
+      // Numeric value displayed for each macro.
       datalabels: {
         color: "white",
         padding: 6,
@@ -276,6 +283,7 @@ const ProgressChart = () => {
           return value + "g";
         }
       },
+      // Displayed when user hovers over chart.
       tooltip: {
         callbacks: {
           title: (data) => {return ""},
