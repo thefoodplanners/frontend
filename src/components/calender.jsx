@@ -93,10 +93,10 @@ const Calender = () => {
 
   const renderItemInfo = (recipe) => {
     return (
-    <div className="w-100 d-flex flex-column justify-content-center align-items-center" style={{gridRowStart: "1", gridColumnStart: "1", padding: "1px 0px"}}>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.name} </div>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.mealType} </div>
-      <div className="text-white fw-bold" style={{textShadow: "0px 0px 10px  black", backgroundColor: "#0008", width: "fit-content", padding: "0px 4px"}}> {recipe.calories} cals </div>
+    <div className="w-100 d-flex flex-column justify-content-center align-items-center render-item-info-container">
+      <div className="text-white fw-bold render-item-info-child"> {recipe.name} </div>
+      <div className="text-white fw-bold render-item-info-child"> {recipe.mealType} </div>
+      <div className="text-white fw-bold render-item-info-child"> {recipe.calories} cals </div>
     </div>
     )
   };
@@ -245,9 +245,9 @@ const Calender = () => {
         style={{backgroundImage: "url('" + imageRef + "')",  backgroundSize: "cover", backgroundPosition: "center", display: "grid", gridTemplateColumns: "1fr"}}
         className="funny w-100"
       >
-        <div className="w-100 d-flex justify-content-start align-items-right z-1" style={{gridRowStart: "1", gridColumnStart: "1", padding: "0px 4px"}}>
+        <div className="w-100 d-flex justify-content-start align-items-right z-1 delete-item-container">
           {/* <Button variant="primary" size="sm"> */}
-          <i className="bi bi-x-lg" style={{zIndex: "99", cursor: "pointer", height: "fit-content", textShadow: "0px 0px 4px white"}} onClick={() => deleteFoodItem(day, index)}></i>
+          <i className="bi bi-x-lg delete-item-child" onClick={() => deleteFoodItem(day, index)}></i>
         </div>
 
         <Popup
@@ -294,10 +294,9 @@ const Calender = () => {
 
   const renderDayRow = (day) => {
     return (
-      <div className="">  {/* style={{flex: 1, display: "flex", height: "1px" }}> */}
+      <div className="">
         <div 
-          className="d-flex flex-column overflow-auto"
-          style={{minHeight: "50vh", height: "0px"}}
+          className="d-flex flex-column overflow-auto calender-container"
         >
           {
             // if we have fetched meals from the backend and we have meals to display
@@ -326,7 +325,7 @@ const Calender = () => {
                 }}
                 className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-center align-items-center"
               > 
-                <Button className="btn" variant="primary" onClick={() => addFoodItem(day)} style={{backgroundColor: "#9EE493", borderColor: "#5db7de"}}>
+                <Button className="btn no-item-button" variant="primary" onClick={() => addFoodItem(day)}>
                   <i className="bi bi-plus fs-1"></i> 
                 </Button>
               </div>

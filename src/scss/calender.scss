@@ -55,3 +55,39 @@
   display: table; /* keep the background color wrapped tight */
   margin: 0px auto 0px auto; /* keep the table centered */
 }
+
+.calender-container {
+  min-height: 50vh; 
+  height: 0px;
+}
+
+.render-item-info-container {
+  grid-row-start: 1;
+  grid-column-start: 1;
+  padding: 1px 0px;
+}
+
+.render-item-info-child {
+  text-shadow: 0px 0px 10px black;
+  background-color: #0008;
+  width: fit-content;
+  padding: 0px 4px;
+}
+
+.delete-item-container {
+  grid-row-start: 1;
+  grid-column-start: 1;
+  padding: 0px 4px;
+}
+
+.delete-item-child {
+  z-index: 99;
+  cursor: pointer;
+  height: fit-content;
+  text-shadow: 0px 0px 4px white;
+}
+
+.no-item-button {
+  background-color: #9EE493;
+  border-color: #5db7de;
+}
