@@ -5,23 +5,9 @@ import Stack from "react-bootstrap/Stack";
 import { LinkContainer } from "react-router-bootstrap";
 import { useState } from "react";
 import "../scss/register.scss";
-
-const preferences = [
-  { preference: "Vegetarian" },
-  { preference: "Vegan" },
-  { preference: "Keto" },
-  { preference: "Lactose" },
-  { preference: "Halal" },
-  { preference: "Kosher" },
-  { preference: "Dairy-Free" },
-  { preference: "Low-Carbs" },
-  { preference: "Gluten-Free" },
-  { preference: "Peanuts" },
-  { preference: "Eggs" },
-  { preference: "Fish" },
-  { preference: "Tree Nuts" },
-  { preference: "Soy" },
-];
+import { preferencesData } from "../utils/preferencesData";
+import Preferences from "../components/preferences";
+import MaxCalories from "../components/maxCalories";
 
 const Register = () => {
   const [formStep, setFormStep] = useState(0);
@@ -30,7 +16,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [calories, setCalories] = useState(0);
   const [checked, setChecked] = useState(
-    new Array(preferences.length).fill(false)
+    new Array(preferencesData.length).fill(false)
   );
 
   const completeFormStep = () => {
@@ -39,14 +25,6 @@ const Register = () => {
 
   const revertFormStep = () => {
     setFormStep((cur) => cur - 1);
-  };
-
-  const handleChange = (position) => {
-    const updateChecked = checked.map((item, index) =>
-      index === position ? !item : item
-    );
-
-    setChecked(updateChecked);
   };
 
   const handleSubmit = (e) => {
@@ -156,24 +134,7 @@ const Register = () => {
                   Back
                 </Button>
                 <Form.Group className="mb-3" controlId="formBasicPreferences">
-                  <h4 className="title">Select preferences</h4>
-                  <ul className="preferences-list">
-                    {preferences.map(({ preference }, index) => {
-                      return (
-                        <li key={index}>
-                          <input
-                            type="checkbox"
-                            id={`custom-checkbox-${index}`}
-                            name={preference}
-                            value={preference}
-                            checked={checked[index]}
-                            onChange={() => handleChange(index)}
-                          />
-                          <label>{preference}</label>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  <Preferences checked={checked} setChecked={setChecked} />
                 </Form.Group>
                 <div className="ms-auto">
                   <Button
@@ -193,13 +154,9 @@ const Register = () => {
                 </Button>
                 <div className="max-calories">
                   <Form.Group controlId="formMaxCalories">
-                    <Form.Label>Maximum Daily Calories</Form.Label>
-                    <Form.Control
-                      type="input"
-                      placeholder="Enter Calories"
-                      name="calories"
-                      value={calories}
-                      onChange={(e) => setCalories(e.target.value)}
+                    <MaxCalories
+                      calories={calories}
+                      setCalories={setCalories}
                     />
                   </Form.Group>
                 </div>
