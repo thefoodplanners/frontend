@@ -67,13 +67,16 @@ const Calender = () => {
 
   // render the button used to move week in the calender
   const renderWeekChanger = () => (
-      <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
+      <div className="row gx-0 three-cols mb-3 mt-3 d-flex">
         {/* <div className="col-xs-0 col-md-1"></div> */}
-        <div className="col-xs-12 col-md-4">
-          <div className="d-flex justify-content-between align-items-center">
-            <Button className="btn">
-              <i className="bi bi-arrow-clockwise" onClick={() => generateMeals()}></i>
+        <div className="col-xs-1 col-md-4">
+            <Button className="btn" onClick={() => generateMeals()}>
+              <i className="bi bi-arrow-clockwise pe-2"></i>
+              re-generate
             </Button>
+        </div>
+        <div className="col-xs-1 col-md-4">
+          <div className="d-flex justify-content-between align-items-center">
             <Button className="btn" onClick={() => updateDate(-7)}>
               <i className="bi bi-arrow-left"></i>
             </Button>
