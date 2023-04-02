@@ -370,38 +370,30 @@ const Calender = () => {
         <div className="col-xs-12 col-sm-6 col-md-1 text-center">  
           <div className="bg-primary"> Monday </div>
           {renderDayRow(0)}
-          <div className=""> {getTotalDayCalories(0)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Tuesday </div>
           {renderDayRow(1)}
-          <div className=""> {getTotalDayCalories(1)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Wednesday </div>
           {renderDayRow(2)}
-          <div className=""> {getTotalDayCalories(2)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Thursday </div>
           {renderDayRow(3)}
-          <div className=""> {getTotalDayCalories(3)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Friday </div>
           {renderDayRow(4)}
-          <div className=""> {getTotalDayCalories(4)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Saturday </div>
           {renderDayRow(5)}
-          <div className=""> {getTotalDayCalories(5)} cals </div>
         </div>
         <div className="col-xs-12 col-sm-6 col-md-1 text-center"> 
           <div className="bg-primary"> Sunday </div>
           {renderDayRow(6)}
-          <div className=""> {getTotalDayCalories(6)} cals </div>
-          {/* currentWeekMeals.length !== 0 && renderDayRow(6) */}
         </div>
       </div>
     )
@@ -435,6 +427,21 @@ const Calender = () => {
       <div className="mt-3" />
       <div className="row gx-0 seven-cols">
         {
+            // add calory summaries
+            [0,1,2,3,4,5,6].map((item,index)=>(
+              <div className="col-md-1">
+                <div 
+                  key={index}
+                  className="text-center text-white fw-bold total-calories-div"
+                >
+                  {getTotalDayCalories(index)} daily calories
+                </div>
+              </div>
+            ))
+        }
+      <div className="mt-3" />
+        {
+            // render add buttons
             [0,1,2,3,4,5,6].map((item,index)=>(
               <div key={index} className="d-flex justify-content-center align-items-center col-md-1">
                 <Button className="btn" variant="primary" onClick={() => addFoodItem(index)}>
@@ -443,7 +450,15 @@ const Calender = () => {
               </div>
             ))
         }
-        <div className="col-md-1"> {getTotalWeekCalories()} cals </div>
+      </div>
+      <div className="row gx-0 d-flex justify-content-center align-items-center mt-3">
+        <div className="col-xs-12">
+          <div 
+            className="text-center text-white fw-bold total-calories-div"
+          > 
+            {getTotalWeekCalories()} weekly calories
+          </div>
+        </div>
       </div>
       <SuggestionModal
         show={showSuggestionModal}
