@@ -329,17 +329,25 @@ const ProgressChart = () => {
         </div>
       </div>
   );
-
-  return (
-    <div>
-      <div style={{ position: "relative", width: "70vw", margin: "20px", float: "left" }}>
-        {renderWeekChanger()}
+  
+  const renderDateChanger = () => (
+    <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
+      <div className="col-xs-12 col-md-3 d-flex justify-content-center">
         <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
           <ToggleButton id="day" variant="outline-primary"  onChange={() => {fetchData("day"); changeTarget("day")}} value={1}> Day </ToggleButton>
           <ToggleButton id="week" variant="outline-primary"  onChange={() => {fetchData("week"); changeTarget("week")}} value={2}> Week </ToggleButton>
           <ToggleButton id="month" variant="outline-primary" onChange={() => {fetchData("month"); changeTarget("month")}} value={3}> Month </ToggleButton>
           <ToggleButton id="year" variant="outline-primary" onChange={() => {fetchData("year"); changeTarget("year")}} value={4}> Year </ToggleButton>
         </ToggleButtonGroup>
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      {renderWeekChanger()}
+      {renderDateChanger()}
+      <div style={{ position: "relative", width: "70vw", margin: "20px", float: "left" }}>
         <Line options={optionsCalories} data={dataCalories} />
       </div>
       <div style={{ width: "20vw", height: "500px", float: "left", margin: "200px 0 0 35px" }}>
