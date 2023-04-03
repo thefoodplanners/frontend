@@ -428,11 +428,8 @@ const Calender = () => {
         {
             // add calory summaries
             [0,1,2,3,4,5,6].map((item,index)=>(
-              <div className="col-md-1">
-                <div 
-                  key={index}
-                  className="text-center text-white fw-bold total-calories-div"
-                >
+              <div key={index} className="col-md-1">
+                <div className="text-center text-white fw-bold total-calories-div">
                   {getTotalDayCalories(index)} daily calories
                 </div>
               </div>
