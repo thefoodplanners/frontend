@@ -3,22 +3,37 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import AsyncSelect from 'react-select/async';
 
 // pane for dynamic suggestion items
 const SuggestionPane = (props) => {
+  const [fetched, setFetched] = useState(false);
   const [addMealList, setAddMealList] = useState([]);
   // state for suggestions
   const [selectedMealStates, setSelectedMealStates] = useState([false, false, false]);
   const [currentSuggestionsIndex, setCurrentSuggestionsIndex] = useState(0);
+  const [macroDropdown, setMacroDropdown] = useState("Fats");
+  const [macroValue, setMacroValue] = useState(0);
 
   // TODO why does this keep running over and over?
   // fetch options for suggested options
   useEffect(() => {
     //console.log("use effect run: ");
     // fetch meals we can add
-    const date = props.date;
-    fetch(`http://localhost:9000/calendar/meals/recommendation?date=${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`, {
+    if (fetched) return;
+    const date = `${props.date.getFullYear()}-${props.date.getMonth()+1}-${props.date.getDate()}`;
+    let macro;
+    if (macroValue === 0) {
+      macro = "";
+    }
+    else {
+      macro = `${macroDropdown.toLowerCase()}=${macroValue}`;
+    }
+    fetch(`http://localhost:9000/calendar/meals/recommendation?date=${date}&${macro}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -30,9 +45,10 @@ const SuggestionPane = (props) => {
     }).then((data) => {
       //console.log(data);
       setAddMealList(data);
+      setFetched(true)
     });
-  }, []);
-  //}, [addMealList]);
+  //}, []);
+  }, [addMealList, fetched]);
 
   const handleItemSelected = (listGroupIndex) => {
     // set the meal as selected
@@ -62,9 +78,34 @@ const SuggestionPane = (props) => {
     //setSelectedMealStates(Array(data[0].length).fill(false))
   }
 
+  const handleMacroChange = (event) => {
+    console.log("HIIIIIIIIIIIIIIIII")
+    setMacroValue(event.target.value);
+    setSelectedMealStates([false, false, false]);
+    setAddMealList([]);
+    setFetched(false);
+  }
+
   return (
     <div>
       <h4>Suggested meals</h4>
+      <InputGroup className="mb-2">
+        <DropdownButton
+          title={macroDropdown}
+          id="input-group-dropdown-1"
+        >
+          <Dropdown.Item onClick={() => setMacroDropdown("Fats")}>Fats</Dropdown.Item>
+          <Dropdown.Item onClick={() => setMacroDropdown("Proteins")}>Proteins</Dropdown.Item>
+          <Dropdown.Item onClick={() => setMacroDropdown("Carbohydrates")}>Carbohydrates</Dropdown.Item>
+        </DropdownButton>
+        <Form.Control
+          style={{ maxWidth: "100px", fontWeight: "bold" }}
+          aria-label="Text input with dropdown button"
+          type="number"
+          onChange={handleMacroChange}
+        />
+        <InputGroup.Text><b>g</b></InputGroup.Text>
+      </InputGroup>
       {
         // if we have fetched meal list
         addMealList.length !== 0 &&
@@ -72,7 +113,7 @@ const SuggestionPane = (props) => {
           {
             addMealList[currentSuggestionsIndex].map((item,index) => (
               <ListGroup.Item key={index} as="li" active={selectedMealStates[index]} onClick={() => handleItemSelected(index)}>
-                {item.name} - {item.calories}cals
+                {item.name} - {item.calories}cals, {item.fats.toFixed(1)}g fats, {item.proteins.toFixed(1)}g proteins, {item.carbohydrates.toFixed(1)}g carbs
               </ListGroup.Item>
             ))
           }
