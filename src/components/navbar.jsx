@@ -28,22 +28,31 @@ function NavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         {isAuthenticated && (
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <LinkContainer to="/home">
-                <Nav.Link>Home</Nav.Link>
+          <>
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="me-auto">
+                <LinkContainer to="/home">
+                  <Nav.Link>Home</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/dashboard">
+                  <Nav.Link>Dashboard</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/progress">
+                  <Nav.Link>Progress</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/logout">
+                  <Nav.Link>Logout</Nav.Link>
+                </LinkContainer>
+              </Nav>
+            </Navbar.Collapse>
+            <Navbar.Collapse className="justify-content-end">
+              <LinkContainer to="/settings">
+                <a>
+                  <i className="text-white bi bi-gear"></i>
+                </a>
               </LinkContainer>
-              <LinkContainer to="/dashboard">
-                <Nav.Link>Dashboard</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/progress">
-                <Nav.Link>Progress</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/logout">
-                <Nav.Link>Logout</Nav.Link>
-              </LinkContainer>
-            </Nav>
-          </Navbar.Collapse>
+            </Navbar.Collapse>
+          </>
         )}
         {!isAuthenticated && (
           <Navbar.Collapse id="basic-navbar-nav">
@@ -60,14 +69,6 @@ function NavBar() {
             </Nav>
           </Navbar.Collapse>
         )}
-
-        <Navbar.Collapse className="justify-content-end">
-          <LinkContainer to="/settings">
-            <a>
-              <i className="text-white bi bi-gear"></i>
-            </a>
-          </LinkContainer>
-        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
