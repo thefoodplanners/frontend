@@ -10,6 +10,7 @@ import NoPage from "./pages/nopage";
 import Progress from "./pages/progress";
 import Footer from "./components/footer";
 import AuthContextProvider from "./components/authContext";
+import Settings from "./pages/settings";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="logout" element={<Logout />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="progress" element={<Progress />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="*" element={<NoPage />} />
           </Routes>
         </div>

@@ -1,0 +1,16 @@
+export const preferencesData = [
+  { preference: "Vegetarian" },
+  { preference: "Vegan" },
+  { preference: "Keto" },
+  { preference: "Lactose" },
+  { preference: "Halal" },
+  { preference: "Kosher" },
+  { preference: "Dairy-Free" },
+  { preference: "Low-Carbs" },
+  { preference: "Gluten-Free" },
+  { preference: "Peanuts" },
+  { preference: "Eggs" },
+  { preference: "Fish" },
+  { preference: "Tree Nuts" },
+  { preference: "Soy" },
+];
