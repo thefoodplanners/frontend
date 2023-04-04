@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-//import Row from 'react-bootstrap/Row';
-//import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
@@ -19,8 +17,6 @@ ChartJS.register(
 );
 
 const Calender = () => {
-  //const [currentWeek, setCurrentWeek] = useState(new Date());
-  //const [selectedDay, setSelectedDay] = useState();
   // meals by day
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
   const [fetchedMeals, setFetchedMeals] = useState(false);
@@ -28,12 +24,9 @@ const Calender = () => {
   const [suggestionSelectedDate, setSuggestionSelectedDate] = useState(selectedDate);
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
   const [dragMeal, setDragMeal] = useState({});
-  // day
-  //const [suggestionAddDay, setSuggestionAddDay] = useState(-1);
   
   // x index = day, y index = meal number
   useEffect(() => {
-    //2023-02-30
     // fetchedMeals is a dependancy, but we only want to run after it changes from true -> false (after we add a meal)
     if (fetchedMeals){
       return;
@@ -53,22 +46,11 @@ const Calender = () => {
       setFetchedMeals(true);
       setCurrentWeekMeals(data);
     });
-    //setCurrentWeekMeals(
-    //  [
-    //    [{name: "eggs", id: 69},{name: "chicken", id: 27}], // monday
-    //    [{name: "m1"},{name: "m2"},{name: "m3"}], // tuesday
-    //    [], // wednesday
-    //    [{name: "m1"},{name: "m2"},{name: "m3"},{name: "m4"},{name: "m5"},{name: "m6"}], // thursday
-    //    [], // friday
-    //    [], // saturday
-    //    [], // sunday
-    //  ]);
   }, [selectedDate, fetchedMeals]);
 
   // render the button used to move week in the calender
   const renderWeekChanger = () => (
       <div className="row gx-0 three-cols mb-3 mt-3 d-flex">
-        {/* <div className="col-xs-0 col-md-1"></div> */}
         <div className="col-xs-1 col-md-4">
             <Button className="btn" onClick={() => generateMeals()}>
               <i className="bi bi-arrow-clockwise pe-2"></i>
@@ -190,13 +172,6 @@ const Calender = () => {
   // sync the status of current week meals with the backend
   const syncCurrentWeekMeals = (newDay, newMealNumber) => {
     const newDate = getCurrentDay(selectedDate, newDay);
-    //const mealsToSend = currentWeekMeals.map( (day) => day.map( (item) => item.mealSlotId ) );
-    ////return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0), 0)
-    //const body = {
-    //  meals: mealsToSend,
-    //  startDate: `${mondayDate.getFullYear()}-${mondayDate.getMonth()+1}-${mondayDate.getDate()}`,
-    //  endDate: `${sundayDate.getFullYear()}-${sundayDate.getMonth()+1}-${sundayDate.getDate()}`,
-    //}
     const body = {
       mealSlotId: dragMeal.item.mealSlotId,
       mealNum: newMealNumber,
@@ -210,15 +185,11 @@ const Calender = () => {
       body: JSON.stringify(body),
       withCredentials: true,
       credentials: 'include',
-    }).then((response) => {
-      console.log(response);
-      console.log(response.ok);
-    })
+    });
   }
 
   const renderItem = (item,index,day) => {
     const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
-    //const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
     const itemInfo = renderItemInfo(item.recipe);
     const recipe = item.recipe;
     return (
@@ -246,7 +217,6 @@ const Calender = () => {
         className="funny w-100"
       >
         <div className="w-100 d-flex justify-content-start align-items-right z-1 delete-item-container">
-          {/* <Button variant="primary" size="sm"> */}
           <i className="bi bi-x-lg delete-item-child" onClick={() => deleteFoodItem(day, index)}></i>
         </div>
 
@@ -411,11 +381,8 @@ const Calender = () => {
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
-      //console.log(response);
       if (response.ok) setFetchedMeals(false);
-      return response.text();
-    }).then((data) => {
-      console.log(data);
+      //return response.text();
     });
   }
   

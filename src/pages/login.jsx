@@ -29,7 +29,6 @@ const Login = () => {
       },
       credentials: "include",
     }).then((response) => {
-      console.log(response);
       if (response.status === 200) {
         setAuth(true);
         navigate("/dashboard");

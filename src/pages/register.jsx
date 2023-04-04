@@ -52,9 +52,6 @@ const Register = () => {
       },
     };
 
-    console.log(email);
-    console.log(password);
-
     fetch("http://localhost:9000/register", {
       method: "POST",
       body: JSON.stringify(body),
@@ -63,7 +60,6 @@ const Register = () => {
       },
       credentials: "include",
     }).then((response) => {
-      console.log(response);
       if (response.status === 200) {
         completeFormStep();
       }

@@ -22,7 +22,6 @@ const SuggestionPane = (props) => {
   // TODO why does this keep running over and over?
   // fetch options for suggested options
   useEffect(() => {
-    //console.log("use effect run: ");
     // fetch meals we can add
     if (fetched) return;
     const date = `${props.date.getFullYear()}-${props.date.getMonth()+1}-${props.date.getDate()}`;
@@ -43,16 +42,13 @@ const SuggestionPane = (props) => {
     }).then((response) => {
       return response.json();
     }).then((data) => {
-      //console.log(data);
       setAddMealList(data);
       setFetched(true)
     });
-  //}, []);
   }, [addMealList, fetched]);
 
   const handleItemSelected = (listGroupIndex) => {
     // set the meal as selected
-    //const newSelectedMealStates = [...selectedMealStates].map((item, index) => {
     const newSelectedMealStates = selectedMealStates.map((item, index) => {
       if (index === listGroupIndex) return true;
       else return false;
@@ -75,11 +71,9 @@ const SuggestionPane = (props) => {
     setCurrentSuggestionsIndex(nextIndex);
     setSelectedMealStates([false, false, false])
     props.setMealToAdd(-1);
-    //setSelectedMealStates(Array(data[0].length).fill(false))
   }
 
   const handleMacroChange = (event) => {
-    console.log("HIIIIIIIIIIIIIIIII")
     setMacroValue(event.target.value);
     setSelectedMealStates([false, false, false]);
     setAddMealList([]);
@@ -142,7 +136,7 @@ const SuggestionPane = (props) => {
 const SearchPane = (props) => {
   // fetch options for search
   const loadSearchOptions = (input, callback) => {
-    fetch(`http://localhost:9000/search?query=${input}`, {
+    fetch(`http://localhost:9000/search/recipe?query=${input}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -150,7 +144,6 @@ const SearchPane = (props) => {
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
-      //console.log(response);
       return response.json();
     }).then((data) => {
       data = data.map((item) => ({
@@ -174,7 +167,6 @@ const SearchPane = (props) => {
         className="mt-5" 
         theme={(theme) => ({
           ...theme,
-          //borderRadius: 0,
           colors: {
             ...theme.colors,
             primary25: "#DD5353",
@@ -206,7 +198,6 @@ const SuggestionModal = (props) => {
     fetch("http://localhost:9000/calendar/meals", {
       method: "POST",
       headers: {
-        //"Content-Type": "application/json",
         "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify(body),
@@ -214,8 +205,6 @@ const SuggestionModal = (props) => {
       credentials: 'include',
     }).then((response) => {
       if (response.ok) props.setFetchedMeals(false)
-      //console.log(response);
-      //return response.json();
     });
   }
   
@@ -251,10 +240,8 @@ const SuggestionModal = (props) => {
           onClick={() => {handleAddItem()}}
           disabled={!mealToAdd === -1}
         > 
-          {/* disabled={!selectedMealStates.includes(true)} */}
           <i className="bi bi-plus fs-4"></i>
         </Button>
-        {/* <Button onClick={props.onHide}>Close</Button> */}
       </Modal.Footer>
     </Modal>
   );

@@ -10,7 +10,7 @@ import { useContext } from "react";
 import { AuthContext } from "./authContext";
 
 function NavBar() {
-  const { isAuthenticated, setAuth } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
   return (
     <Navbar className="navbar navbar-dark bg-primary" expand="lg">

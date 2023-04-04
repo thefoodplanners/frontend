@@ -73,7 +73,7 @@ const ProgressChart = () => {
 
   // Fetches target calories.
   useEffect(() => {
-  if (fetchedTarget) {
+    if (fetchedTarget) {
       return;
     }
     fetch(`http://localhost:9000/user/target-calories`, {
@@ -145,6 +145,8 @@ const ProgressChart = () => {
         else value = 1;
         newDate = new Date(selectedDate.setFullYear(selectedDate.getFullYear() + value));
         break;
+      default:
+        console.log(currentDateType + " is not a valid date type");
     };
     setSelectedDate(newDate);
   };
@@ -161,9 +163,9 @@ const ProgressChart = () => {
   const labelsCalories = currentMetrics.metrics.map(item => item.date);
   const caloriesData = currentMetrics.metrics.map(item => item.totalCalories);
 
-  const fatsData = currentMetrics.metrics.map(item => item.totalFats);
-  const proteinsData = currentMetrics.metrics.map(item => item.totalProteins);
-  const carbsData = currentMetrics.metrics.map(item => item.totalCarbs);
+  //const fatsData = currentMetrics.metrics.map(item => item.totalFats);
+  //const proteinsData = currentMetrics.metrics.map(item => item.totalProteins);
+  //const carbsData = currentMetrics.metrics.map(item => item.totalCarbs);
 
   const optionsCalories = {
     responsive: true,
@@ -172,7 +174,6 @@ const ProgressChart = () => {
         let ind = elems[0].index;
         let dayName = dataCalories.labels[ind];
         setCurrentMacros(macros(ind, dayName));
-        console.log(macros(ind, dayName));
       }
     },
     scales: {
@@ -315,7 +316,6 @@ const ProgressChart = () => {
 
   const renderWeekChanger = () => (
       <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
-        {/* <div className="col-xs-0 col-md-1"></div> */}
         <div className="col-xs-12 col-md-3">
           <div className="d-flex justify-content-between align-items-center">
             <Button className="btn" onClick={() => updateDate(true)}>

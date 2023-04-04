@@ -19,7 +19,6 @@ const AuthContextProvider = (props) => {
     }).then((response) => {
         const status = response.ok;
         status === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-        console.log(response);
       })
       .catch((error) => {
         console.log(error.response);
@@ -32,7 +31,6 @@ const AuthContextProvider = (props) => {
 
   return (
     <AuthContext.Provider
-      //value={[isAuthenticated, setIsAuthenticated, setAuth]}
       value={{isAuthenticated, setIsAuthenticated, setAuth}}
     >
       {props.children}
