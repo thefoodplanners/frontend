@@ -57,7 +57,7 @@ const Login = () => {
   };
 
   return (
-    <Card className="cardContainer">
+    <Card className="card-container">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
 

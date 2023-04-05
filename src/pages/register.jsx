@@ -138,7 +138,7 @@ const Register = () => {
   };
   return (
     <>
-      <Card className="cardContainer">
+      <Card className="card-container">
         <Card.Header className="bg-primary">Register</Card.Header>
         <Card.Body>
           <Form onSubmit={handleSubmit}>
