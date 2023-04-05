@@ -15,7 +15,6 @@ const Settings = () => {
   const [checked, setChecked] = useState(
     new Array(preferencesData.length).fill(false)
   );
-  const [data, setData] = useState([]);
 
   // get list of preferences for the current user
   const fetchCurrent = () => {
@@ -30,15 +29,33 @@ const Settings = () => {
         // console.log(response);
         return response.json();
       })
-      .then((d) => setData(d));
+      .then((d) => {
+        const lastChecked = [];
+        console.log(d);
+        lastChecked.push(d["isVegan"]);
+        lastChecked.push(d["isVegetarian"]);
+        lastChecked.push(d["isKeto"]);
+        lastChecked.push(d["isLactose"]);
+        lastChecked.push(d["isHalal"]);
+        lastChecked.push(d["isKosher"]);
+        lastChecked.push(d["isDairyFree"]);
+        lastChecked.push(d["isLowCarbs"]);
+        lastChecked.push(d["isGlutenFree"]);
+        lastChecked.push(d["isPeanuts"]);
+        lastChecked.push(d["isEggs"]);
+        lastChecked.push(d["isFish"]);
+        lastChecked.push(d["isTreeNuts"]);
+        lastChecked.push(d["isSoy"]);
+
+        setChecked(lastChecked);
+        setCalories(d["targetCalories"]);
+        //setData(d)
+      });
   };
 
   useEffect(() => {
     fetchCurrent();
   }, []);
-
-  // console.log(Object.values(data));
-  console.log(data.targetCalories);
 
   const completeFormStep = () => {
     setFormStep((cur) => cur + 1);
@@ -82,7 +99,7 @@ const Settings = () => {
   };
 
   return (
-    <Card className="cardContainer">
+    <Card className="card-container">
       <Card.Header className="bg-primary">
         Change Preference Settings
       </Card.Header>
@@ -96,7 +113,7 @@ const Settings = () => {
               <br />
               <Form.Group controlId="formMaxCalories">
                 <MaxCalories calories={calories} setCalories={setCalories} />
-                <p>{data.MaxCalories}</p>
+                <p>{checked.targetCalories}</p>
               </Form.Group>
               <br />
               <Button variant="primary" type="submit">
