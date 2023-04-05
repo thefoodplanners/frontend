@@ -6,6 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
 import SuggestionModal from './suggestionModal';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -58,7 +59,7 @@ const Calender = () => {
         <div className="col-xs-1 col-md-4">
             <Button className="btn" onClick={() => generateMeals()}>
               <i className="bi bi-arrow-clockwise pe-2"></i>
-              re-generate
+              re-generate week
             </Button>
         </div>
         <div className="col-xs-1 col-md-4">
@@ -165,7 +166,46 @@ const Calender = () => {
       ],
     };
 
-    return <Pie data={data} />;
+    const options = {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Macros for " + recipe.name,
+          font: {
+            size: 30
+          }
+        },
+        // Numeric value displayed for each macro.
+        datalabels: {
+          color: "white",
+          padding: 6,
+          font: {
+            weight: "bold",
+            size: 14
+          },
+          borderColor: 'white',
+          borderRadius: 25,
+          borderWidth: 2,
+          backgroundColor: "#333333",
+          display: function(context) {
+            return context.dataset.data[context.dataIndex] > 3;
+          },
+          formatter: (value, ctx) => {
+            return value + "g";
+          }
+        },
+        // Displayed when user hovers over chart.
+        tooltip: {
+          callbacks: {
+            title: (data) => {return ""},
+            label: (data) => {return `${data.label}: ${data.raw}g`}
+          }
+        }
+      }
+    };
+    
+    return <Pie options={options} data={data} plugins={[ChartDataLabels]} />;
   };
 
   // re-generate a weeks worth of meals
