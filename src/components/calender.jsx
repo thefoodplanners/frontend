@@ -16,6 +16,7 @@ ChartJS.register(
   Legend
 );
 
+// calender component for dashboard page
 const Calender = () => {
   // meals by day
   const [currentWeekMeals, setCurrentWeekMeals] = useState([]);
@@ -31,21 +32,24 @@ const Calender = () => {
     if (fetchedMeals){
       return;
     }
-    // fetch meals for calender
+    // fetch meals for calender, for the current date
     const weekDate = getMonday(selectedDate);
     fetch(`http://localhost:9000/calendar/meals?weekDate=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
+      // make sure we send auth token with the request
       withCredentials: true,
       credentials: 'include',
     }).then((response) => {
       return response.json();
     }).then((data) => {
+      // update meals state
       setFetchedMeals(true);
       setCurrentWeekMeals(data);
     });
+  // the ueseffect re-renders when the selected date or fetched meals bool change
   }, [selectedDate, fetchedMeals]);
 
   // render the button used to move week in the calender
@@ -73,6 +77,7 @@ const Calender = () => {
       </div>
   );
 
+  // render basic item info in each cell
   const renderItemInfo = (recipe) => {
     return (
     <div className="w-100 d-flex flex-column justify-content-center align-items-center render-item-info-container">
@@ -83,48 +88,57 @@ const Calender = () => {
     )
   };
   
+  // update date state values
   const updateDate = (value) => {
     setFetchedMeals(false);
     setCurrentWeekMeals([])
     setSelectedDate(new Date(selectedDate.setDate(selectedDate.getDate() + value)))
   }
   
+  // take a date object, and return a new date with the day set to monday
   const getMonday = (d) => {
     d = new Date(d);
-    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1); // adjust when day is sunday
+    // adjust when day is sunday
+    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1);
     return new Date(d.setDate(diff));
   }
   
+  // take a date object, and return a new date with the day set to sunday
   const getSunday = (d) => {
     d = new Date(d);
-    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + 6; // adjust when day is sunday
+    // adjust when day is sunday
+    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + 6;
     return new Date(d.setDate(diff));
   }
   
+  // take a date object and a day, and return a new date with the day set to the passed day
   const getCurrentDay = (d, wkDay) => {
     d = new Date(d);
-    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + wkDay; // adjust when day is the given date
+    // adjust when day is the given date
+    var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6:1) + wkDay;
     return new Date(d.setDate(diff));
   }
 
+  // get a users dietary preferences
   const getDiets = (recipe) => {
     const diets = Object.entries(recipe.preferences);
     return diets
-      // Only get the preferences which are true
+      // only get the preferences which are true
       .filter(pref => pref[1])
-      // Get the first part of the array. E.g. isVegan
+      // get the first part of the array. E.g. isVegan
       .map(pref => pref[0])
-      // Remove the 'is' part from the string.
+      // remove the 'is' part from the string.
       .map(pref => pref.slice(2))
-      // Split preferences to separate words. E.g. 'DiaryFree' to ['Diary', 'Free']
+      // split preferences to separate words. E.g. 'DiaryFree' to ['Diary', 'Free']
       .map(pref => pref.match(/[A-Z][a-z]+/g))
-      // Join separate words with spaces. E.g. ['Diary', 'Free'] to 'Diary Free'
+      // join separate words with spaces. E.g. ['Diary', 'Free'] to 'Diary Free'
       .map(prefArr => prefArr.join(" "))
       .join(" | ")
   }
   const contentStyle = { background: "var(--bs-body-bg)", width: "max-content" };
   const arrowStyle = { color: "var(--bs-body-bg)" };
 
+  // create pie chart with macro data
   const getMacrosPieChartData = (recipe) => {
     const data = {
       labels: ["Fats (g)", "Proteins (g)", "Carbohydrates (g)"],
@@ -154,6 +168,7 @@ const Calender = () => {
     return <Pie data={data} />;
   };
 
+  // re-generate a weeks worth of meals
   const generateMeals = () => {
     const weekDate = getMonday(selectedDate);
     fetch(`http://localhost:9000/calendar/meals/weekly-meal-plan?date=${weekDate.getFullYear()}-${weekDate.getMonth()+1}-${weekDate.getDate()}`, {
@@ -169,14 +184,17 @@ const Calender = () => {
     });
   };
   
-  // sync the status of current week meals with the backend
+  // sync the status of current week meals with the backend, used meals are rearranged by drag and drop
   const syncCurrentWeekMeals = (newDay, newMealNumber) => {
+    // get a date object with day set to current day
     const newDate = getCurrentDay(selectedDate, newDay);
+    // set POST request body to the current meal and current date
     const body = {
       mealSlotId: dragMeal.item.mealSlotId,
       mealNum: newMealNumber,
       date: `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`,
     }
+    // call move api, with details of meal being moved
     fetch(`http://localhost:9000/calendar/meals/move`, {
       method: "POST",
       headers: {
@@ -188,7 +206,9 @@ const Calender = () => {
     });
   }
 
+  // render a single item/cell for the table
   const renderItem = (item,index,day) => {
+    // set var to base64 image from backend
     const imageRef = `data:image/jpeg;base64,${item.recipe.imageRef}`;
     const itemInfo = renderItemInfo(item.recipe);
     const recipe = item.recipe;
@@ -262,6 +282,7 @@ const Calender = () => {
     )
   }
 
+  // render a row of the table
   const renderDayRow = (day) => {
     return (
       <div className="">
@@ -271,6 +292,7 @@ const Calender = () => {
           {
             // if we have fetched meals from the backend and we have meals to display
             fetchedMeals && currentWeekMeals[day].length > 0 &&
+            // iterate over meals for the current day and render them in the current row
             currentWeekMeals[day].map((item,index)=>(
               <div key={index} className="text-center border border-1 w-100 h-100 flex-grow-1 bg-white shadow-sm d-flex justify-content-stretch align-items-stretch">
                 {renderItem(item,index,day)}
@@ -319,6 +341,7 @@ const Calender = () => {
     )
   }
   
+  // get total calories for a day
   const getTotalDayCalories = (day) => {
     // if we havent fetched meals yet return nothing
     if (!fetchedMeals) return 0;
@@ -326,6 +349,7 @@ const Calender = () => {
     return currentWeekMeals[day].reduce((sum, item) => sum + item.recipe.calories, 0);
   }
   
+  // get total calories for the week
   const getTotalWeekCalories = () => {
     // if we havent fetched meals yet return nothing
     if (!fetchedMeals) return 0;
@@ -333,6 +357,7 @@ const Calender = () => {
     return currentWeekMeals.reduce((sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0), 0)
   }
 
+  // render the rows of the calender
   const renderParentRows = () => {
     return (
       <div className="row gx-0 seven-cols">
@@ -368,12 +393,14 @@ const Calender = () => {
     )
   }
 
+  // add a food item to the calender for a specific day
   const addFoodItem = (day) => {
     setSuggestionSelectedDate(getCurrentDay(selectedDate, day));
     // TODO avoid re-rendering modal between these 2 state changes
     setShowSuggestionModal(true);
   }
 
+  // delete a food item from a specific day and position
   const deleteFoodItem = (day, index) => {
     const mealId = currentWeekMeals[day][index].mealSlotId
     fetch(`http://localhost:9000/calendar/meals/${mealId}`, {
@@ -393,7 +420,7 @@ const Calender = () => {
       <div className="mt-3" />
       <div className="row gx-0 seven-cols">
         {
-            // add calory summaries
+            // render calorie summaries
             [0,1,2,3,4,5,6].map((item,index)=>(
               <div key={index} className="col-md-1">
                 <div className="text-center text-white fw-bold total-calories-div">

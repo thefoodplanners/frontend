@@ -1,6 +1,8 @@
 import { preferencesData } from "../utils/preferencesData";
 
+// prefereces component
 const Preferences = (props) => {
+  // update state when an item is added
   const handleChange = (position) => {
     const updateChecked = props.checked.map((item, index) =>
       index === position ? !item : item

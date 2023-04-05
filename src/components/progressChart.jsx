@@ -32,8 +32,10 @@ ChartJS.register(
   );
 
 
+// progress chart component, for the progress page
 const ProgressChart = () => {
 
+  // set up state for inputs and graphs
   const [currentMetrics, setCurrentMetrics] = useState({"label": "", metrics: []});
   const [fetchedMetrics, setFetchedMetrics] = useState(false);
   const [target, setTarget] = useState(0);
@@ -42,7 +44,7 @@ const ProgressChart = () => {
   const [currentMacros, setCurrentMacros] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
 
-  // Fetches metrics.
+  // fetches metrics from backend
   useEffect(() => {
     if (fetchedMetrics) {
       return;
@@ -59,19 +61,22 @@ const ProgressChart = () => {
     }).then((data) => {
       setFetchedMetrics(true);
       setCurrentMetrics(data);
+      // extracts fields from api json response
       let macros = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(data.metrics[0]);
       macros.day = data.metrics[0].date;
+      // update state with new macros
       setCurrentMacros(macros);
       setSelectedDate(new Date(data.date));
     });
   }, [currentMetrics, fetchedMetrics, currentMacros]);
 
+  // set toggle state to day/week/month/year
   const fetchData = (dateType) => {
     setFetchedMetrics(false);
     setCurrentDateType(dateType);
   }
 
-  // Fetches target calories.
+  // fetches target calories
   useEffect(() => {
     if (fetchedTarget) {
       return;
@@ -91,7 +96,7 @@ const ProgressChart = () => {
     });
   }, [target, fetchedTarget]);
 
-  // Used by changeTarget. Conversion rate for target calories.
+  // used by changetarget, conversion rate for target calories
   const targetConversion = [
     ["day", "week", 7],
     ["day", "month", 30.5],
@@ -107,7 +112,7 @@ const ProgressChart = () => {
     ["year", "month", 1/12]
   ];
 
-  // Changes target calories based on time unit selected.
+  // changes target calories based on time unit selected
   const changeTarget = (dateType) => {
     let conversion = targetConversion.filter(conversion => conversion[0] === currentDateType && conversion[1] === dateType);
     let newTarget = target * conversion[0][2];
@@ -119,7 +124,7 @@ const ProgressChart = () => {
     else return data.reduce((a,b) => a + b) / data.length;
   };
 
-  // Changes date for that time unit.
+  // changes date for that time unit
   const updateDate = (isPrev) => {
     setFetchedMetrics(false);
     let value;
@@ -151,7 +156,7 @@ const ProgressChart = () => {
     setSelectedDate(newDate);
   };
 
-  // Extracts macros fields in main json currentMetrics.
+  // extracts macros fields in main json currentMetrics
   const macros = (index, dayName) => {
     let macroObj = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(currentMetrics.metrics[index]);
     macroObj.day = dayName;
@@ -160,6 +165,7 @@ const ProgressChart = () => {
 
   const macrosData = Object.values(currentMacros);
 
+  // get data from metrics
   const labelsCalories = currentMetrics.metrics.map(item => item.date);
   const caloriesData = currentMetrics.metrics.map(item => item.totalCalories);
 
@@ -167,6 +173,7 @@ const ProgressChart = () => {
   //const proteinsData = currentMetrics.metrics.map(item => item.totalProteins);
   //const carbsData = currentMetrics.metrics.map(item => item.totalCarbs);
 
+  // setup options for graph
   const optionsCalories = {
     responsive: true,
     onClick: (_, elems) => {
@@ -330,6 +337,7 @@ const ProgressChart = () => {
       </div>
   );
   
+  // render the date changer component
   const renderDateChanger = () => (
     <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
       <div className="col-xs-12 col-md-3 d-flex justify-content-center">

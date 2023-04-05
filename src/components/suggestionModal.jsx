@@ -11,6 +11,7 @@ import AsyncSelect from 'react-select/async';
 
 // pane for dynamic suggestion items
 const SuggestionPane = (props) => {
+  // state for parent modal component
   const [fetched, setFetched] = useState(false);
   const [addMealList, setAddMealList] = useState([]);
   // state for suggestions
@@ -32,6 +33,7 @@ const SuggestionPane = (props) => {
     else {
       macro = `${macroDropdown.toLowerCase()}=${macroValue}`;
     }
+    // fetch list of suggestions
     fetch(`http://localhost:9000/calendar/meals/recommendation?date=${date}&${macro}`, {
       method: "GET",
       headers: {
@@ -47,6 +49,7 @@ const SuggestionPane = (props) => {
     });
   }, [addMealList, fetched]);
 
+  // update state when suggestion is selected and tell parent modal
   const handleItemSelected = (listGroupIndex) => {
     // set the meal as selected
     const newSelectedMealStates = selectedMealStates.map((item, index) => {
@@ -61,6 +64,7 @@ const SuggestionPane = (props) => {
     props.setMealToAdd(mealToAdd.id);
   }
   
+  // load next 3 suggestions
   const handleNextSuggestionsClick = (move) => {
     // len = 3, index = 2, move= +1: index=(index+1)%len: index=2+1=3%3=0
     // len = 3, index = 0, move= -1: index=(index+1)%len: index=2+1=3%3=0
@@ -73,6 +77,7 @@ const SuggestionPane = (props) => {
     props.setMealToAdd(-1);
   }
 
+  // update filter of suggestions
   const handleMacroChange = (event) => {
     setMacroValue(event.target.value);
     setSelectedMealStates([false, false, false]);
@@ -154,6 +159,7 @@ const SearchPane = (props) => {
     });
   }
   
+  // update parent component state when meal is selected
   const onchangeSelect = (item) => {
     props.setMealToAdd(item.value);
   };
@@ -179,22 +185,26 @@ const SearchPane = (props) => {
 
 }
 
+// add suggestions modal
 const SuggestionModal = (props) => {
   // whether to show pane with suggestions or pane with search bar
   const [currentPane, setCurrentPane] = useState("suggestion");
   // int repersenting id of meal to add
   const [mealToAdd, setMealToAdd] = useState(-1)
   
+  // handle when item is added by child pane
   const handleAddItem = () => {
     props.onHide();
     const currentDate = new Date(props.date);
 
+    // set body of POST request to add item
     const body = {
         date: `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()}`,
         mealNum: 0,
         recipeId: mealToAdd,
     };
 
+    // tell backend to add item
     fetch("http://localhost:9000/calendar/meals", {
       method: "POST",
       headers: {

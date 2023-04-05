@@ -9,6 +9,7 @@ import { preferencesData } from "../utils/preferencesData";
 import Preferences from "../components/preferences";
 import MaxCalories from "../components/maxCalories";
 
+// register page
 const Register = () => {
   const [formStep, setFormStep] = useState(0);
   const [email, setEmail] = useState("");
@@ -27,8 +28,10 @@ const Register = () => {
     setFormStep((cur) => cur - 1);
   };
 
+  // register account with backend
   const handleSubmit = (e) => {
     e.preventDefault();
+    // create body of POST request
     const body = {
       email: email,
       username: username,

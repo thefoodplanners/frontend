@@ -1,5 +1,6 @@
 import ProgressChart from '../components/progressChart'
 
+// progress page
 const Progress = () => {
   return (
     <div>

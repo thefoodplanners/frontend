@@ -1,5 +1,6 @@
 import NavBar from "../components/navbar"
 
+// header component
 const Header = () => {
   return (
     <>

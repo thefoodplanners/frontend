@@ -1,5 +1,6 @@
 import Form from "react-bootstrap/Form";
 
+// max calories component
 const MaxCalories = (props) => {
   return (
     <>

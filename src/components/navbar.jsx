@@ -9,7 +9,10 @@ import FoodGenLogo from "../assets/food_gen_logo_white.png";
 import { useContext } from "react";
 import { AuthContext } from "./authContext";
 
+// navbar component
 function NavBar() {
+  // get the authentication context
+  // the navbar will load items relative to whether we are logged in or not
   const { isAuthenticated } = useContext(AuthContext);
 
   return (

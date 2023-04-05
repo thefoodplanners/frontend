@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../components/authContext";
 
+// login page
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { isAuthenticated, setAuth } = useContext(AuthContext);
+  const { setAuth } = useContext(AuthContext);
 
+  // handle submition of login details
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
@@ -21,6 +23,7 @@ const Login = () => {
       password: password,
     };
 
+    // login with entered details
     fetch("http://localhost:9000/login", {
       method: "POST",
       body: JSON.stringify(body),
@@ -30,7 +33,9 @@ const Login = () => {
       credentials: "include",
     }).then((response) => {
       if (response.status === 200) {
+        // set global authentication state to true (logged in)
         setAuth(true);
+        // navigate to dashboard
         navigate("/dashboard");
       }
       //return response.json(); // do something with response JSON

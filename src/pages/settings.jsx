@@ -7,7 +7,9 @@ import Button from "react-bootstrap/Button";
 import MaxCalories from "../components/maxCalories";
 import { LinkContainer } from "react-router-bootstrap";
 
+// page for updating settings
 const Settings = () => {
+  // set state for settings form
   const [formStep, setFormStep] = useState(0);
   const [calories, setCalories] = useState(0);
   const [checked, setChecked] = useState(
@@ -15,6 +17,7 @@ const Settings = () => {
   );
   const [data, setData] = useState([]);
 
+  // get list of preferences for the current user
   const fetchCurrent = () => {
     fetch("http://localhost:9000/user/preferences", {
       method: "GET",
@@ -43,6 +46,7 @@ const Settings = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // create body for POST request
     const body = {
       isVegan: checked[0],
       isVegetarian: checked[1],
@@ -61,6 +65,7 @@ const Settings = () => {
       targetCalories: Number(calories),
     };
 
+    // submit updated preferences
     fetch("http://localhost:9000/user/preferences", {
       method: "POST",
       body: JSON.stringify(body),

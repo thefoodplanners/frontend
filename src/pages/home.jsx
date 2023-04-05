@@ -5,6 +5,7 @@ import FoodImage1 from "../assets/meal_planner1.jpg";
 import Image from "react-bootstrap/Image";
 import "../scss/home.scss";
 
+// home/advertising page
 const Home = () => {
   return (
     <Carousel interval={null}>
