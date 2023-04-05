@@ -14,6 +14,7 @@ import Settings from "./pages/settings";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+// root app component, setup page routing for the application
 function App() {
   return (
     <AuthContextProvider>
