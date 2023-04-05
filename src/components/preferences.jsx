@@ -14,23 +14,28 @@ const Preferences = (props) => {
   return (
     <>
       <h4 className="title">Select preferences</h4>
-      <ul className="preferences-list">
-        {preferencesData.map(({ preference }, index) => {
-          return (
-            <li key={index}>
-              <input
-                type="checkbox"
-                id={`custom-checkbox-${index}`}
-                name={preference}
-                value={preference}
-                checked={props.checked[index]}
-                onChange={() => handleChange(index)}
-              />
-              <label>{preference}</label>
-            </li>
-          );
-        })}
-      </ul>
+        <div className="container">
+          <div className="row">
+          {preferencesData.map(({ preference }, index) => {
+            return (
+              <div 
+                key={index} 
+                className="col-6 d-flex justify-content-center"
+              >
+                <label className="me-2">{preference}</label>
+                <input
+                  type="checkbox"
+                  id={`custom-checkbox-${index}`}
+                  name={preference}
+                  value={preference}
+                  checked={props.checked[index]}
+                  onChange={() => handleChange(index)}
+                />
+              </div>
+            );
+          })}
+          </div>
+        </div>
     </>
   );
 };
