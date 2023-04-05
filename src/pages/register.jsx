@@ -12,13 +12,30 @@ import MaxCalories from "../components/maxCalories";
 // register page
 const Register = () => {
   const [formStep, setFormStep] = useState(0);
+
+  // form step 0 states
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [calories, setCalories] = useState(0);
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  // form step 1 states
   const [checked, setChecked] = useState(
     new Array(preferencesData.length).fill(false)
   );
+
+  // form set 2 states
+  const [calories, setCalories] = useState(0);
+  const [termsChecked, setTermsChecked] = useState(false);
+  
+  // validation states
+  const [invalidInput, setInvalidInput] = useState(false);
+  const [invalidInputMsgs, setInvalidInputMsgs] = useState([]);
+
+  const registerCompleteFormStep = () => {
+    // if the inputs are valid, then we can move to the next step
+    if (validateRegisterInputs()) setFormStep((cur) => cur + 1);
+  }
 
   const completeFormStep = () => {
     setFormStep((cur) => cur + 1);
@@ -27,10 +44,61 @@ const Register = () => {
   const revertFormStep = () => {
     setFormStep((cur) => cur - 1);
   };
+  
+  // validate the register field inputs
+  const validateRegisterInputs = () => {
+    let isValid = true;
+    let invalidMessages = [];
+    if (!email.includes("@")) {
+      invalidMessages.push("Invalid email");
+      isValid = false;
+    }
+    if (password !== passwordConfirm){
+      // if we already have an err, we need a newline in paragraph
+      if (isValid === false) invalidMessages.push(<br />)
+      invalidMessages.push("Password not equal to confirmed password");
+      isValid = false;
+    }
+    setInvalidInputMsgs(invalidMessages);
+    setInvalidInput(!isValid);
+    return isValid;
+  }
+  
+  // validate the maximum daily calories input
+  const validateFinalInputs = () => {
+    let isValid = true;
+    let invalidMessages = [];
+    if (!isNumeric(calories)){
+      isValid = false;
+      invalidMessages.push("Max daily calories is not an integer");
+    // if it is an integer is it more than 0
+    } else if (calories <= 0){
+      isValid = false;
+      invalidMessages.push("Max daily calories must be more than 0");
+    }
+    if (!termsChecked){
+      // if we already have an err, we need a newline in paragraph
+      if (isValid === false) invalidMessages.push(<br />)
+      invalidMessages.push("Must accept terms and conditions");
+      isValid = false;
+    }
+
+    setInvalidInputMsgs(invalidMessages);
+    setInvalidInput(!isValid);
+    return isValid;
+  }
+  
+  const isNumeric = (value)  => {
+    return !isNaN(value) && // use type coercion to parse the _entirety_ of the string (`parseInt` alone does not do this)...
+           !isNaN(parseInt(value)) // ...and ensure strings of whitespace fail
+  }
 
   // register account with backend
   const handleSubmit = (e) => {
     e.preventDefault();
+    // check the final inputs before sending data
+    if (!validateFinalInputs()) return;
+
     // create body of POST request
     const body = {
       email: email,
@@ -76,9 +144,17 @@ const Register = () => {
           <Form onSubmit={handleSubmit}>
             {formStep === 0 && (
               <section>
+                {
+                  // only re-render if formStep is 0 and input changed (since invalidInput is reused)
+                  formStep === 0 && invalidInput &&
+                  <div class="alert alert-primary" role="alert">
+                    { invalidInputMsgs }
+                  </div>
+                }
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
+                    required
                     type="email"
                     placeholder="Enter email"
                     name="email"
@@ -92,6 +168,7 @@ const Register = () => {
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                   <Form.Label>Username</Form.Label>
                   <Form.Control
+                    required
                     type="text"
                     placeholder="Enter username"
                     name="username"
@@ -102,6 +179,7 @@ const Register = () => {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
+                    required
                     type="password"
                     placeholder="Password"
                     name="password"
@@ -114,13 +192,19 @@ const Register = () => {
                   controlId="formBasicPasswordConfirm"
                 >
                   <Form.Label>Password confirmation</Form.Label>
-                  <Form.Control type="password" placeholder="Password" />
+                  <Form.Control 
+                    type="password"
+                    placeholder="Password"
+                    name="passwordConfirm"
+                    value={passwordConfirm}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                  />
                 </Form.Group>
                 <div className="ms-auto">
                   <Button
                     variant="primary"
                     type="button"
-                    onClick={completeFormStep}
+                    onClick={registerCompleteFormStep}
                   >
                     Next
                   </Button>
@@ -151,6 +235,13 @@ const Register = () => {
                 <Button variant="link" type="Button" onClick={revertFormStep}>
                   Back
                 </Button>
+                {
+                  // only re-render if formStep is 2 and input changed (since invalidInput is reused)
+                  formStep === 2 && invalidInput &&
+                  <div class="alert alert-primary" role="alert">
+                    { invalidInputMsgs }
+                  </div>
+                }
                 <div className="max-calories">
                   <Form.Group controlId="formMaxCalories">
                     <MaxCalories
@@ -165,9 +256,10 @@ const Register = () => {
                     controlId="formBasicCheckboxLegal"
                   >
                     <Form.Check
-                      required
                       type="checkbox"
                       label="I accept the terms and conditions"
+                      value={termsChecked}
+                      onChange={(e) => setTermsChecked(e.target.checked)}
                     />
                   </Form.Group>
                 </Stack>

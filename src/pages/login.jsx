@@ -39,7 +39,6 @@ const Login = () => {
     }).then((response) => (
       response.text()
     )).then((data)=> {
-        console.log(data);
         if (data === "Login successful.") {
           // set global authentication state to true (logged in)
           setAuth(true);
