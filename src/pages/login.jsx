@@ -10,8 +10,13 @@ import { AuthContext } from "../components/authContext";
 
 // login page
 const Login = () => {
+  // state for form data
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // state for validation
+  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [failedLogin, setFailedLogin] = useState(false);
+  // state for successful auth
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 
@@ -31,14 +36,24 @@ const Login = () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }).then((response) => {
-      if (response.status === 200) {
-        // set global authentication state to true (logged in)
-        setAuth(true);
-        // navigate to dashboard
-        navigate("/dashboard");
-      }
-      //return response.json(); // do something with response JSON
+    }).then((response) => (
+      response.text()
+    )).then((data)=> {
+        console.log(data);
+        if (data === "Login successful.") {
+          // set global authentication state to true (logged in)
+          setAuth(true);
+          // navigate to dashboard
+          navigate("/dashboard");
+        // if failed login because of wrong details
+        } else if (data === "Username and/or password is incorrect.") {
+          setInvalidLogin(true);
+          setFailedLogin(false);
+        // if failed login because of something else
+        } else {
+          setInvalidLogin(false);
+          setFailedLogin(true);
+        }
     });
   };
 
@@ -46,6 +61,21 @@ const Login = () => {
     <Card className="cardContainer">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
+
+        {
+          invalidLogin && 
+          <div class="alert alert-primary" role="alert">
+            Authentication details invalid
+          </div>
+        }
+
+        {
+          failedLogin && 
+          <div class="alert alert-primary" role="alert">
+            Failed to login, please try again later
+          </div>
+        }
+
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>
