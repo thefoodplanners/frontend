@@ -1,4 +1,5 @@
 import { preferencesData } from "../utils/preferencesData";
+import PropTypes from "prop-types";
 
 // prefereces component
 const Preferences = (props) => {
@@ -14,14 +15,11 @@ const Preferences = (props) => {
   return (
     <>
       <h4 className="title">Select preferences</h4>
-        <div className="container">
-          <div className="row">
+      <div className="container">
+        <div className="row">
           {preferencesData.map(({ preference }, index) => {
             return (
-              <div 
-                key={index} 
-                className="col-6 d-flex justify-content-center"
-              >
+              <div key={index} className="col-6 d-flex justify-content-center">
                 <label className="me-2">{preference}</label>
                 <input
                   type="checkbox"
@@ -34,10 +32,15 @@ const Preferences = (props) => {
               </div>
             );
           })}
-          </div>
         </div>
+      </div>
     </>
   );
+};
+
+Preferences.propTypes = {
+  checked: PropTypes.any,
+  setChecked: PropTypes.any,
 };
 
 export default Preferences;

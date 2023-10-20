@@ -36,44 +36,41 @@ const Login = () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }).then((response) => (
-      response.text()
-    )).then((data)=> {
+    })
+      .then((response) => response.text())
+      .then((data) => {
         if (data === "Login successful.") {
           // set global authentication state to true (logged in)
           setAuth(true);
           // navigate to dashboard
           navigate("/dashboard");
-        // if failed login because of wrong details
+          // if failed login because of wrong details
         } else if (data === "Username and/or password is incorrect.") {
           setInvalidLogin(true);
           setFailedLogin(false);
-        // if failed login because of something else
+          // if failed login because of something else
         } else {
           setInvalidLogin(false);
           setFailedLogin(true);
         }
-    });
+      });
   };
 
   return (
     <Card className="card-container">
       <Card.Header className="bg-primary">Login</Card.Header>
       <Card.Body>
-
-        {
-          invalidLogin && 
-          <div class="alert alert-primary" role="alert">
+        {invalidLogin && (
+          <div className="alert alert-primary" role="alert">
             Authentication details invalid
           </div>
-        }
+        )}
 
-        {
-          failedLogin && 
-          <div class="alert alert-primary" role="alert">
+        {failedLogin && (
+          <div className="alert alert-primary" role="alert">
             Failed to login, please try again later
           </div>
-        }
+        )}
 
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicUsername">

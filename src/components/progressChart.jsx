@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import Button from 'react-bootstrap/Button';
+import { useState, useEffect } from "react";
+import Button from "react-bootstrap/Button";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,30 +13,31 @@ import {
   Tooltip,
   Filler,
   Legend,
-  ArcElement
-} from 'chart.js';
-import { Line, Pie } from 'react-chartjs-2';
-import annotationPlugin from 'chartjs-plugin-annotation';
+  ArcElement,
+} from "chart.js";
+import { Line, Pie } from "react-chartjs-2";
+import annotationPlugin from "chartjs-plugin-annotation";
 
 ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Filler,
-    Legend,
-    ArcElement,
-    annotationPlugin
-  );
-
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+  ArcElement,
+  annotationPlugin
+);
 
 // progress chart component, for the progress page
 const ProgressChart = () => {
-
   // set up state for inputs and graphs
-  const [currentMetrics, setCurrentMetrics] = useState({"label": "", metrics: []});
+  const [currentMetrics, setCurrentMetrics] = useState({
+    label: "",
+    metrics: [],
+  });
   const [fetchedMetrics, setFetchedMetrics] = useState(false);
   const [target, setTarget] = useState(0);
   const [fetchedTarget, setFetchedTarget] = useState(false);
@@ -49,32 +50,43 @@ const ProgressChart = () => {
     if (fetchedMetrics) {
       return;
     }
-    fetch(`http://localhost:9000/chart/${currentDateType}/${selectedDate.getFullYear()}-${selectedDate.getMonth()+1}-${selectedDate.getDate()}/metrics`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-      withCredentials: true,
-      credentials: "include",
-    }).then((response) => {
-      return response.json();
-    }).then((data) => {
-      setFetchedMetrics(true);
-      setCurrentMetrics(data);
-      // extracts fields from api json response
-      let macros = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(data.metrics[0]);
-      macros.day = data.metrics[0].date;
-      // update state with new macros
-      setCurrentMacros(macros);
-      setSelectedDate(new Date(data.date));
-    });
+    fetch(
+      `http://localhost:9000/chart/${currentDateType}/${selectedDate.getFullYear()}-${
+        selectedDate.getMonth() + 1
+      }-${selectedDate.getDate()}/metrics`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+        withCredentials: true,
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setFetchedMetrics(true);
+        setCurrentMetrics(data);
+        // extracts fields from api json response
+        let macros = (({ totalFats, totalProteins, totalCarbs }) => ({
+          totalFats,
+          totalProteins,
+          totalCarbs,
+        }))(data.metrics[0]);
+        macros.day = data.metrics[0].date;
+        // update state with new macros
+        setCurrentMacros(macros);
+        setSelectedDate(new Date(data.date));
+      });
   }, [currentMetrics, fetchedMetrics, currentMacros]);
 
   // set toggle state to day/week/month/year
   const fetchData = (dateType) => {
     setFetchedMetrics(false);
     setCurrentDateType(dateType);
-  }
+  };
 
   // fetches target calories
   useEffect(() => {
@@ -88,12 +100,14 @@ const ProgressChart = () => {
       },
       withCredentials: true,
       credentials: "include",
-    }).then((response) => {
-      return response.text();
-    }).then((data) => {
-      setFetchedTarget(true);
-      setTarget(parseInt(data));
-    });
+    })
+      .then((response) => {
+        return response.text();
+      })
+      .then((data) => {
+        setFetchedTarget(true);
+        setTarget(parseInt(data));
+      });
   }, [target, fetchedTarget]);
 
   // used by changetarget, conversion rate for target calories
@@ -101,27 +115,30 @@ const ProgressChart = () => {
     ["day", "week", 7],
     ["day", "month", 30.5],
     ["day", "year", 365],
-    ["week", "day", 1/7],
+    ["week", "day", 1 / 7],
     ["week", "month", 4.3],
     ["week", "year", 52],
-    ["month", "day", 1/30.5],
-    ["month", "week", 1/4.3],
+    ["month", "day", 1 / 30.5],
+    ["month", "week", 1 / 4.3],
     ["month", "year", 12],
-    ["year", "day", 1/365],
-    ["year", "week", 1/52],
-    ["year", "month", 1/12]
+    ["year", "day", 1 / 365],
+    ["year", "week", 1 / 52],
+    ["year", "month", 1 / 12],
   ];
 
   // changes target calories based on time unit selected
   const changeTarget = (dateType) => {
-    let conversion = targetConversion.filter(conversion => conversion[0] === currentDateType && conversion[1] === dateType);
+    let conversion = targetConversion.filter(
+      (conversion) =>
+        conversion[0] === currentDateType && conversion[1] === dateType
+    );
     let newTarget = target * conversion[0][2];
     setTarget(Math.round(newTarget));
-  }
+  };
 
   const getAverage = (data) => {
     if (data.length === 0) return 0;
-    else return data.reduce((a,b) => a + b) / data.length;
+    else return data.reduce((a, b) => a + b) / data.length;
   };
 
   // changes date for that time unit
@@ -133,41 +150,53 @@ const ProgressChart = () => {
       case "day":
         if (isPrev) value = -1;
         else value = 1;
-        newDate = new Date(selectedDate.setDate(selectedDate.getDate() + value));
+        newDate = new Date(
+          selectedDate.setDate(selectedDate.getDate() + value)
+        );
         break;
       case "week":
         if (isPrev) value = -7;
         else value = 7;
-        newDate = new Date(selectedDate.setDate(selectedDate.getDate() + value));
+        newDate = new Date(
+          selectedDate.setDate(selectedDate.getDate() + value)
+        );
         break;
       case "month":
         if (isPrev) value = -1;
         else value = 1;
-        newDate = new Date(selectedDate.setMonth(selectedDate.getMonth() + value));
+        newDate = new Date(
+          selectedDate.setMonth(selectedDate.getMonth() + value)
+        );
         break;
       case "year":
         if (isPrev) value = -1;
         else value = 1;
-        newDate = new Date(selectedDate.setFullYear(selectedDate.getFullYear() + value));
+        newDate = new Date(
+          selectedDate.setFullYear(selectedDate.getFullYear() + value)
+        );
         break;
       default:
         console.log(currentDateType + " is not a valid date type");
-    };
+    }
     setSelectedDate(newDate);
   };
 
   // extracts macros fields in main json currentMetrics
   const macros = (index, dayName) => {
-    let macroObj = (({ totalFats, totalProteins, totalCarbs }) => ({ totalFats, totalProteins, totalCarbs }))(currentMetrics.metrics[index]);
+    let macroObj = (({ totalFats, totalProteins, totalCarbs }) => ({
+      totalFats,
+      totalProteins,
+      totalCarbs,
+    }))(currentMetrics.metrics[index]);
     macroObj.day = dayName;
     return macroObj;
-  }
+  };
 
   const macrosData = Object.values(currentMacros);
 
   // get data from metrics
-  const labelsCalories = currentMetrics.metrics.map(item => item.date);
-  const caloriesData = currentMetrics.metrics.map(item => item.totalCalories);
+  const labelsCalories = currentMetrics.metrics.map((item) => item.date);
+  const caloriesData = currentMetrics.metrics.map((item) => item.totalCalories);
 
   //const fatsData = currentMetrics.metrics.map(item => item.totalFats);
   //const proteinsData = currentMetrics.metrics.map(item => item.totalProteins);
@@ -187,17 +216,17 @@ const ProgressChart = () => {
       x: {
         ticks: {
           font: {
-            size: 20
-          }
-        }
+            size: 20,
+          },
+        },
       },
       y: {
         ticks: {
           font: {
-            size: 20
-          }
-        }
-      }
+            size: 20,
+          },
+        },
+      },
     },
     plugins: {
       legend: {
@@ -207,8 +236,8 @@ const ProgressChart = () => {
         display: true,
         text: "Calories",
         font: {
-          size: 40
-        }
+          size: 40,
+        },
       },
       annotation: {
         annotations: [
@@ -224,8 +253,8 @@ const ProgressChart = () => {
               display: true,
               backgroundColor: "rgb(27, 75, 75)",
               position: "start",
-              content: "Target"
-            }
+              content: "Target",
+            },
           },
           {
             type: "line",
@@ -238,12 +267,12 @@ const ProgressChart = () => {
               display: true,
               backgroundColor: "rgb(153, 77, 0)",
               position: "end",
-              content: "Average"
-            }
-          }
-        ]
-      }
-    }
+              content: "Average",
+            },
+          },
+        ],
+      },
+    },
   };
 
   const dataCalories = {
@@ -256,8 +285,8 @@ const ProgressChart = () => {
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
         font: {
-          size: 20
-        }
+          size: 20,
+        },
       },
     ],
   };
@@ -269,8 +298,8 @@ const ProgressChart = () => {
         display: true,
         text: "Macros for " + macrosData[macrosData.length - 1],
         font: {
-          size: 30
-        }
+          size: 30,
+        },
       },
       // Numeric value displayed for each macro.
       datalabels: {
@@ -278,74 +307,122 @@ const ProgressChart = () => {
         padding: 6,
         font: {
           weight: "bold",
-          size: 14
+          size: 14,
         },
-        borderColor: 'white',
+        borderColor: "white",
         borderRadius: 25,
         borderWidth: 2,
         backgroundColor: "#333333",
-        display: function(context) {
+        display: function (context) {
           return context.dataset.data[context.dataIndex] > 3;
         },
-        formatter: (value, ctx) => {
+        formatter: (value) => {
           return value + "g";
-        }
+        },
       },
       // Displayed when user hovers over chart.
       tooltip: {
         callbacks: {
-          title: (data) => {return ""},
-          label: (data) => {return `${data.label}: ${data.raw}g`}
-        }
-      }
-    }
-  }
+          title: () => {
+            return "";
+          },
+          label: (data) => {
+            return `${data.label}: ${data.raw}g`;
+          },
+        },
+      },
+    },
+  };
 
   const dataMacros = {
-      labels: ["Fats", "Proteins", "Carbohydrates"],
-      datasets: [
-        {
-          data: macrosData.slice(0, -1),
-          backgroundColor: [
-            "rgba(255, 148, 77, 0.7)",
-            "rgba(230, 0, 0, 0.7)",
-            "rgba(204, 153, 0, 0.7)",
-          ],
-          borderColor: [
-            "rgba(255, 148, 77, 1)",
-            "rgba(230, 0, 0, 1)",
-            "rgba(204, 153, 0, 1)",
-          ],
-          borderWidth: 2,
-        }
-      ],
-    };
+    labels: ["Fats", "Proteins", "Carbohydrates"],
+    datasets: [
+      {
+        data: macrosData.slice(0, -1),
+        backgroundColor: [
+          "rgba(255, 148, 77, 0.7)",
+          "rgba(230, 0, 0, 0.7)",
+          "rgba(204, 153, 0, 0.7)",
+        ],
+        borderColor: [
+          "rgba(255, 148, 77, 1)",
+          "rgba(230, 0, 0, 1)",
+          "rgba(204, 153, 0, 1)",
+        ],
+        borderWidth: 2,
+      },
+    ],
+  };
 
   const renderWeekChanger = () => (
-      <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
-        <div className="col-xs-12 col-md-3">
-          <div className="d-flex justify-content-between align-items-center">
-            <Button className="btn" onClick={() => updateDate(true)}>
-              <i className="bi bi-arrow-left"></i>
-            </Button>
-            <div className="text-center"> {currentMetrics.label} </div>
-            <Button className="btn" onClick={() => updateDate(false)}>
-              <i className="bi bi-arrow-right"></i>
-            </Button>
-          </div>
+    <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
+      <div className="col-xs-12 col-md-3">
+        <div className="d-flex justify-content-between align-items-center">
+          <Button className="btn" onClick={() => updateDate(true)}>
+            <i className="bi bi-arrow-left"></i>
+          </Button>
+          <div className="text-center"> {currentMetrics.label} </div>
+          <Button className="btn" onClick={() => updateDate(false)}>
+            <i className="bi bi-arrow-right"></i>
+          </Button>
         </div>
       </div>
+    </div>
   );
-  
+
   // render the date changer component
   const renderDateChanger = () => (
     <div className="row gx-0 seven-cols mb-3 mt-3 d-flex justify-content-center">
       <div className="col-xs-12 col-md-3 d-flex justify-content-center">
         <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-          <ToggleButton id="day" variant="outline-primary"  onChange={() => {fetchData("day"); changeTarget("day")}} value={1}> Day </ToggleButton>
-          <ToggleButton id="week" variant="outline-primary"  onChange={() => {fetchData("week"); changeTarget("week")}} value={2}> Week </ToggleButton>
-          <ToggleButton id="month" variant="outline-primary" onChange={() => {fetchData("month"); changeTarget("month")}} value={3}> Month </ToggleButton>
-          <ToggleButton id="year" variant="outline-primary" onChange={() => {fetchData("year"); changeTarget("year")}} value={4}> Year </ToggleButton>
+          <ToggleButton
+            id="day"
+            variant="outline-primary"
+            onChange={() => {
+              fetchData("day");
+              changeTarget("day");
+            }}
+            value={1}
+          >
+            {" "}
+            Day{" "}
+          </ToggleButton>
+          <ToggleButton
+            id="week"
+            variant="outline-primary"
+            onChange={() => {
+              fetchData("week");
+              changeTarget("week");
+            }}
+            value={2}
+          >
+            {" "}
+            Week{" "}
+          </ToggleButton>
+          <ToggleButton
+            id="month"
+            variant="outline-primary"
+            onChange={() => {
+              fetchData("month");
+              changeTarget("month");
+            }}
+            value={3}
+          >
+            {" "}
+            Month{" "}
+          </ToggleButton>
+          <ToggleButton
+            id="year"
+            variant="outline-primary"
+            onChange={() => {
+              fetchData("year");
+              changeTarget("year");
+            }}
+            value={4}
+          >
+            {" "}
+            Year{" "}
+          </ToggleButton>
         </ToggleButtonGroup>
       </div>
     </div>
@@ -355,11 +432,29 @@ const ProgressChart = () => {
     <div>
       {renderWeekChanger()}
       {renderDateChanger()}
-      <div style={{ position: "relative", width: "70vw", margin: "20px", float: "left" }}>
+      <div
+        style={{
+          position: "relative",
+          width: "70vw",
+          margin: "20px",
+          float: "left",
+        }}
+      >
         <Line options={optionsCalories} data={dataCalories} />
       </div>
-      <div style={{ width: "20vw", height: "500px", float: "left", margin: "200px 0 0 35px" }}>
-        <Pie options={optionsMacros} data={dataMacros} plugins={[ChartDataLabels]} />
+      <div
+        style={{
+          width: "20vw",
+          height: "500px",
+          float: "left",
+          margin: "200px 0 0 35px",
+        }}
+      >
+        <Pie
+          options={optionsMacros}
+          data={dataMacros}
+          plugins={[ChartDataLabels]}
+        />
       </div>
     </div>
   );

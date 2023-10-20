@@ -1,4 +1,5 @@
 import Form from "react-bootstrap/Form";
+import PropTypes from "prop-types";
 
 // max calories component
 const MaxCalories = (props) => {
@@ -14,6 +15,11 @@ const MaxCalories = (props) => {
       />
     </>
   );
+};
+
+MaxCalories.propTypes = {
+  calories: PropTypes.any,
+  setCalories: PropTypes.any,
 };
 
 export default MaxCalories;

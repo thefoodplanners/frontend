@@ -15,8 +15,8 @@ const Home = () => {
           <h1>Create</h1>
           <p>
             Start by telling us about yourself, your diet preferences, and your
-            goals. We'll suggest and recommend meals specific to your needs in
-            seconds! You always have the option to tweak your settings later.
+            goals. We&apos;ll suggest and recommend meals specific to your needs
+            in seconds! You always have the option to tweak your settings later.
           </p>
         </Carousel.Caption>
       </Carousel.Item>
@@ -26,8 +26,8 @@ const Home = () => {
           <h1>Cook</h1>
           <p>
             Enjoy making and eating delicious meals without the stress of
-            planning. Not only will you know you're eating better, you'll have
-            more time and energy for other things.
+            planning. Not only will you know you&apos;re eating better,
+            you&apos;ll have more time and energy for other things.
           </p>
         </Carousel.Caption>
       </Carousel.Item>

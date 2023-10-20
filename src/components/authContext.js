@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 // create react context
 export const AuthContext = createContext();
@@ -19,8 +19,9 @@ const AuthContextProvider = (props) => {
         "Content-Type": "application/json",
       },
       withCredentials: true,
-      credentials: 'include',
-    }).then((response) => {
+      credentials: "include",
+    })
+      .then((response) => {
         const status = response.ok;
         // if we are we want the rest of the app to know (anyone subscribed to the context)
         status === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
@@ -37,7 +38,7 @@ const AuthContextProvider = (props) => {
 
   return (
     <AuthContext.Provider
-      value={{isAuthenticated, setIsAuthenticated, setAuth}}
+      value={{ isAuthenticated, setIsAuthenticated, setAuth }}
     >
       {props.children}
     </AuthContext.Provider>
@@ -45,7 +46,7 @@ const AuthContextProvider = (props) => {
 };
 
 AuthContextProvider.propTypes = {
-  children: PropTypes.any
-}
+  children: PropTypes.any,
+};
 
 export default AuthContextProvider;

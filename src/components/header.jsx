@@ -1,4 +1,4 @@
-import NavBar from "../components/navbar"
+import NavBar from "../components/navbar";
 
 // header component
 const Header = () => {
@@ -6,7 +6,7 @@ const Header = () => {
     <>
       <NavBar />
     </>
-  )
+  );
 };
 
 export default Header;

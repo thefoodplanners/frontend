@@ -1,10 +1,10 @@
-import ProgressChart from '../components/progressChart'
+import ProgressChart from "../components/progressChart";
 
 // progress page
 const Progress = () => {
   return (
     <div>
-    <ProgressChart />
+      <ProgressChart />
     </div>
   );
 };
