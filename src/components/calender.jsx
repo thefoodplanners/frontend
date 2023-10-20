@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import Popup from "reactjs-popup";
-import "reactjs-popup/dist/index.css";
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 
 import SuggestionModal from "./suggestionModal";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
+
+import { RenderItemPopup } from "./renderItemPopup";
+import { RenderDayTotalPopup } from "./renderDayTotalPopup";
+import { RenderWeekTotalCaloriesPopup } from "./renderWeekTotalPopup";
+import { getMonday, getSunday, getCurrentDay } from "../utils/getDays";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -114,130 +115,6 @@ const Calender = () => {
     );
   };
 
-  // take a date object, and return a new date with the day set to monday
-  const getMonday = (d) => {
-    d = new Date(d);
-    // adjust when day is sunday
-    var day = d.getDay(),
-      diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
-  };
-
-  // take a date object, and return a new date with the day set to sunday
-  const getSunday = (d) => {
-    d = new Date(d);
-    // adjust when day is sunday
-    var day = d.getDay(),
-      diff = d.getDate() - day + (day === 0 ? -6 : 1) + 6;
-    return new Date(d.setDate(diff));
-  };
-
-  // take a date object and a day, and return a new date with the day set to the passed day
-  const getCurrentDay = (d, wkDay) => {
-    d = new Date(d);
-    // adjust when day is the given date
-    var day = d.getDay(),
-      diff = d.getDate() - day + (day === 0 ? -6 : 1) + wkDay;
-    return new Date(d.setDate(diff));
-  };
-
-  // get a users dietary preferences
-  const getDiets = (recipe) => {
-    const diets = Object.entries(recipe.preferences);
-    return (
-      diets
-        // only get the preferences which are true
-        .filter((pref) => pref[1])
-        // get the first part of the array. E.g. isVegan
-        .map((pref) => pref[0])
-        // remove the 'is' part from the string.
-        .map((pref) => pref.slice(2))
-        // split preferences to separate words. E.g. 'DiaryFree' to ['Diary', 'Free']
-        .map((pref) => pref.match(/[A-Z][a-z]+/g))
-        // join separate words with spaces. E.g. ['Diary', 'Free'] to 'Diary Free'
-        .map((prefArr) => prefArr.join(" "))
-        .join(" | ")
-    );
-  };
-  const contentStyle = {
-    background: "var(--bs-body-bg)",
-    width: "max-content",
-  };
-  const arrowStyle = { color: "var(--bs-body-bg)" };
-
-  // create pie chart with macro data
-  const getMacrosPieChartData = (recipe) => {
-    const data = {
-      labels: ["Fats (g)", "Proteins (g)", "Carbohydrates (g)"],
-      datasets: [
-        {
-          label: "Macro nutrients",
-          data: [
-            recipe.fats.toFixed(1),
-            recipe.proteins.toFixed(1),
-            recipe.carbohydrates.toFixed(1),
-          ],
-          backgroundColor: [
-            "rgba(255, 148, 77, 0.2)",
-            "rgba(230, 0, 0, 0.2)",
-            "rgba(204, 153, 0, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 148, 77, 1)",
-            "rgba(230, 0, 0, 1)",
-            "rgba(204, 153, 0, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-
-    const options = {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: "Macros for " + recipe.name,
-          font: {
-            size: 30,
-          },
-        },
-        // Numeric value displayed for each macro.
-        datalabels: {
-          color: "white",
-          padding: 6,
-          font: {
-            weight: "bold",
-            size: 14,
-          },
-          borderColor: "white",
-          borderRadius: 25,
-          borderWidth: 2,
-          backgroundColor: "#333333",
-          display: function (context) {
-            return context.dataset.data[context.dataIndex] > 3;
-          },
-          formatter: (value) => {
-            return value + "g";
-          },
-        },
-        // Displayed when user hovers over chart.
-        tooltip: {
-          callbacks: {
-            title: () => {
-              return "";
-            },
-            label: (data) => {
-              return `${data.label}: ${data.raw}g`;
-            },
-          },
-        },
-      },
-    };
-
-    return <Pie options={options} data={data} plugins={[ChartDataLabels]} />;
-  };
-
   // re-generate a weeks worth of meals
   const generateMeals = () => {
     const weekDate = getMonday(selectedDate);
@@ -332,94 +209,7 @@ const Calender = () => {
             onClick={() => deleteFoodItem(day, index)}
           ></i>
         </div>
-
-        <Popup
-          trigger={itemInfo}
-          position={["right center", "bottom center"]}
-          on="hover"
-          mouseEnterDelay={500}
-          {...{ contentStyle, arrowStyle }}
-          keepTooltipInside="#root"
-          nested
-        >
-          <div>
-            {" "}
-            <span style={{ color: "#ff944d" }}>
-              <b>Fats:</b>
-            </span>{" "}
-            {recipe.fats.toFixed(1)}g{" "}
-          </div>
-          <div>
-            {" "}
-            <span style={{ color: "#e60000" }}>
-              <b>Proteins:</b>
-            </span>{" "}
-            {recipe.proteins.toFixed(1)}g{" "}
-          </div>
-          <div>
-            {" "}
-            <span style={{ color: "#cc9900" }}>
-              <b>Carbohydrates:</b>
-            </span>{" "}
-            {recipe.carbohydrates.toFixed(1)}g{" "}
-          </div>
-          <div>
-            {" "}
-            <b> {getDiets(recipe)} </b>{" "}
-          </div>
-          <Popup
-            trigger={<a href="#">View More</a>}
-            on="click"
-            contentStyle={{ background: "var(--bs-body-bg)" }}
-            modal
-            nested
-          >
-            {(close) => (
-              <div>
-                <div
-                  style={{
-                    float: "left",
-                    borderRight: "1px solid gray",
-                    padding: "5px",
-                    width: "65%",
-                  }}
-                >
-                  <button onClick={close}> &times; </button>
-                  <div>
-                    {" "}
-                    <b>Name:</b> {recipe.name}{" "}
-                  </div>
-                  <div> {recipe.mealType} </div>
-                  <div> {recipe.desc} </div>
-                  <div>
-                    {" "}
-                    <b>Time to cook:</b> {recipe.time} min(s){" "}
-                  </div>
-                  <div>
-                    {" "}
-                    <b>Difficulty:</b> {recipe.difficulty}{" "}
-                  </div>
-                  <div>
-                    {" "}
-                    <b>Ingredients:</b> {recipe.ingredients}{" "}
-                  </div>
-                  <div>
-                    {" "}
-                    <b>Calories:</b> {recipe.calories}{" "}
-                  </div>
-                  <div>
-                    {" "}
-                    <b> {getDiets(recipe)} </b>{" "}
-                  </div>
-                </div>
-                <div style={{ width: "200px", height: "200px", float: "left" }}>
-                  {" "}
-                  {getMacrosPieChartData(recipe)}{" "}
-                </div>
-              </div>
-            )}
-          </Popup>
-        </Popup>
+        <RenderItemPopup recipe={recipe} itemInfo={itemInfo} />
       </div>
     );
   };
@@ -497,77 +287,6 @@ const Calender = () => {
     );
   };
 
-  // get total calories for a day
-  const getTotalDayCalories = (day) => {
-    // if we havent fetched meals yet return nothing
-    if (!fetchedMeals) return 0;
-    // if we have sum calories for all meals in the current day
-    return currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.calories,
-      0
-    );
-  };
-
-  // get total macros for a day
-  const getMacroDayTotals = (day) => {
-    const macros = {
-      fats: 0,
-      proteins: 0,
-      carbohydrates: 0,
-    };
-    if (!fetchedMeals) return macros;
-    macros["fats"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.fats,
-      0
-    );
-    macros["proteins"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.proteins,
-      0
-    );
-    macros["carbohydrates"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.carbohydrates,
-      0
-    );
-    return macros;
-  };
-
-  // get total calories for the week
-  const getTotalWeekCalories = () => {
-    // if we havent fetched meals yet return nothing
-    if (!fetchedMeals) return 0;
-    // if we have sum calories for all meals in the current day
-    return currentWeekMeals.reduce(
-      (sum, day) =>
-        sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0),
-      0
-    );
-  };
-
-  // get total macros for a week
-  const getMacroWeekTotals = () => {
-    const macros = {
-      fats: 0,
-      proteins: 0,
-      carbohydrates: 0,
-    };
-    if (!fetchedMeals) return macros;
-    macros["fats"] = currentWeekMeals.reduce(
-      (sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.fats, 0),
-      0
-    );
-    macros["proteins"] = currentWeekMeals.reduce(
-      (sum, day) =>
-        sum + day.reduce((sum, meal) => sum + meal.recipe.proteins, 0),
-      0
-    );
-    macros["carbohydrates"] = currentWeekMeals.reduce(
-      (sum, day) =>
-        sum + day.reduce((sum, meal) => sum + meal.recipe.carbohydrates, 0),
-      0
-    );
-    return macros;
-  };
-
   // render the rows of the calender
   const renderParentRows = () => {
     return (
@@ -624,130 +343,6 @@ const Calender = () => {
     });
   };
 
-  const renderDayTotalCaloriesPopup = (day) => {
-    const totalDiv = renderDayTotalCalories(day);
-    const macros = getMacroDayTotals(day);
-    return (
-      <Popup
-        trigger={totalDiv}
-        position={["right center", "bottom center"]}
-        on="hover"
-        mouseEnterDelay={500}
-        {...{ contentStyle, arrowStyle }}
-        keepTooltipInside="#root"
-        nested
-      >
-        <div>
-          {" "}
-          <span style={{ color: "#ff944d" }}>
-            <b>Fats:</b>
-          </span>{" "}
-          {macros.fats.toFixed(1)}g{" "}
-        </div>
-        <div>
-          {" "}
-          <span style={{ color: "#e60000" }}>
-            <b>Proteins:</b>
-          </span>{" "}
-          {macros.proteins.toFixed(1)}g{" "}
-        </div>
-        <div>
-          {" "}
-          <span style={{ color: "#cc9900" }}>
-            <b>Carbohydrates:</b>
-          </span>{" "}
-          {macros.carbohydrates.toFixed(1)}g{" "}
-        </div>
-        <Popup
-          trigger={<a href="#">View More</a>}
-          on="click"
-          contentStyle={{ background: "var(--bs-body-bg)" }}
-          modal
-          nested
-        >
-          {(close) => (
-            <div>
-              <button onClick={close}> &times; </button>
-              <div className="d-flex justify-content-center align-items-center mb-3">
-                <div style={{ maxWidth: "300px", maxHeight: "500px" }}>
-                  {getMacrosPieChartData(macros)}
-                </div>
-              </div>
-            </div>
-          )}
-        </Popup>
-      </Popup>
-    );
-  };
-
-  const renderDayTotalCalories = (day) => (
-    <div className="text-center text-white fw-bold total-calories-div">
-      {getTotalDayCalories(day)} daily calories
-    </div>
-  );
-
-  const renderWeekTotalCaloriesPopup = () => {
-    const totalDiv = renderWeekTotalCalories();
-    const macros = getMacroWeekTotals();
-    return (
-      <Popup
-        trigger={totalDiv}
-        position={["right center", "bottom center"]}
-        on="hover"
-        mouseEnterDelay={500}
-        {...{ contentStyle, arrowStyle }}
-        keepTooltipInside="#root"
-        nested
-      >
-        <div>
-          {" "}
-          <span style={{ color: "#ff944d" }}>
-            <b>Fats:</b>
-          </span>{" "}
-          {macros.fats.toFixed(1)}g{" "}
-        </div>
-        <div>
-          {" "}
-          <span style={{ color: "#e60000" }}>
-            <b>Proteins:</b>
-          </span>{" "}
-          {macros.proteins.toFixed(1)}g{" "}
-        </div>
-        <div>
-          {" "}
-          <span style={{ color: "#cc9900" }}>
-            <b>Carbohydrates:</b>
-          </span>{" "}
-          {macros.carbohydrates.toFixed(1)}g{" "}
-        </div>
-        <Popup
-          trigger={<a href="#">View More</a>}
-          on="click"
-          contentStyle={{ background: "var(--bs-body-bg)" }}
-          modal
-          nested
-        >
-          {(close) => (
-            <div>
-              <button onClick={close}> &times; </button>
-              <div className="d-flex justify-content-center align-items-center mb-3">
-                <div style={{ maxWidth: "300px", maxHeight: "500px" }}>
-                  {getMacrosPieChartData(macros)}
-                </div>
-              </div>
-            </div>
-          )}
-        </Popup>
-      </Popup>
-    );
-  };
-
-  const renderWeekTotalCalories = () => (
-    <div className="text-center text-white fw-bold total-calories-div">
-      {getTotalWeekCalories()} weekly calories
-    </div>
-  );
-
   return (
     <Container fluid>
       {renderWeekChanger()}
@@ -758,7 +353,12 @@ const Calender = () => {
           // render calorie summaries
           [0, 1, 2, 3, 4, 5, 6].map((item, index) => (
             <div key={index} className="col-md-1">
-              {renderDayTotalCaloriesPopup(index)}
+              <RenderDayTotalPopup
+                fetchedMeals={fetchedMeals}
+                currentWeekMeals={currentWeekMeals}
+                day={index}
+                recipe={item}
+              />
             </div>
           ))
         }
@@ -782,7 +382,12 @@ const Calender = () => {
         }
       </div>
       <div className="row gx-0 d-flex justify-content-center align-items-center mt-3">
-        <div className="col-xs-12">{renderWeekTotalCaloriesPopup()}</div>
+        <div className="col-xs-12">
+          <RenderWeekTotalCaloriesPopup 
+            fetchedMeals={fetchedMeals}
+            currentWeekMeals={currentWeekMeals}
+          />
+        </div>
       </div>
       <SuggestionModal
         show={showSuggestionModal}
