@@ -3,14 +3,14 @@ import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 
-import SuggestionModal from "./suggestionModal";
+import SuggestionModal from "../suggestionModal";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 import { RenderItemPopup } from "./renderItemPopup";
 import { RenderDayTotalPopup } from "./renderDayTotalPopup";
 import { RenderWeekTotalCaloriesPopup } from "./renderWeekTotalPopup";
-import { getMonday, getSunday, getCurrentDay } from "../utils/getDays";
+import { getMonday, getSunday, getCurrentDay } from "../../utils/getDays";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

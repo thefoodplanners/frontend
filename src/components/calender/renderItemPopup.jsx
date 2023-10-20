@@ -3,7 +3,7 @@ import "reactjs-popup/dist/index.css";
 import PropTypes from "prop-types";
 
 import MacrosPieChart from "./macrosPieChart";
-import { contentStyle, arrowStyle } from "../utils/popupStyles";
+import { contentStyle, arrowStyle } from "../../utils/popupStyles";
 
 const RenderItemPopup = (props) => {
   let recipe = props.recipe;

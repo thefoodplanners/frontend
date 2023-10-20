@@ -3,56 +3,60 @@ import "reactjs-popup/dist/index.css";
 import PropTypes from "prop-types";
 
 import MacrosPieChart from "./macrosPieChart";
-import { contentStyle, arrowStyle } from "../utils/popupStyles";
+import { contentStyle, arrowStyle } from "../../utils/popupStyles";
 
-const RenderDayTotalCaloriesPopup = (props) => {
+const RenderWeekTotalCaloriesPopup = (props) => {
   let fetchedMeals = props.fetchedMeals;
   let currentWeekMeals = props.currentWeekMeals;
-  let day = props.day;
   //let recipe = props.recipe;
 
-  const totalDiv = renderDayTotalCalories(day);
-  const macros = getMacroDayTotals(day);
+  const renderWeekTotalCalories = () => (
+    <div className="text-center text-white fw-bold total-calories-div">
+      {getTotalWeekCalories()} weekly calories
+    </div>
+  );
 
-  const getMacroDayTotals = (day) => {
+  const totalDiv = renderWeekTotalCalories();
+  const macros = getMacroWeekTotals();
+
+
+  // get total macros for a day
+  // get total calories for the week
+  const getTotalWeekCalories = () => {
+    // if we havent fetched meals yet return nothing
+    if (!fetchedMeals) return 0;
+    // if we have sum calories for all meals in the current day
+    return currentWeekMeals.reduce(
+      (sum, day) =>
+        sum + day.reduce((sum, meal) => sum + meal.recipe.calories, 0),
+      0
+    );
+  };
+
+  // get total macros for a week
+  const getMacroWeekTotals = () => {
     const macros = {
       fats: 0,
       proteins: 0,
       carbohydrates: 0,
     };
     if (!fetchedMeals) return macros;
-    macros["fats"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.fats,
+    macros["fats"] = currentWeekMeals.reduce(
+      (sum, day) => sum + day.reduce((sum, meal) => sum + meal.recipe.fats, 0),
       0
     );
-    macros["proteins"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.proteins,
+    macros["proteins"] = currentWeekMeals.reduce(
+      (sum, day) =>
+        sum + day.reduce((sum, meal) => sum + meal.recipe.proteins, 0),
       0
     );
-    macros["carbohydrates"] = currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.carbohydrates,
+    macros["carbohydrates"] = currentWeekMeals.reduce(
+      (sum, day) =>
+        sum + day.reduce((sum, meal) => sum + meal.recipe.carbohydrates, 0),
       0
     );
     return macros;
   };
-
-  const renderDayTotalCalories = (day) => (
-    <div className="text-center text-white fw-bold total-calories-div">
-      {getTotalDayCalories(day)} daily calories
-    </div>
-  );
-
-  // get total calories for a day
-  const getTotalDayCalories = (day) => {
-    // if we havent fetched meals yet return nothing
-    if (!fetchedMeals) return 0;
-    // if we have sum calories for all meals in the current day
-    return currentWeekMeals[day].reduce(
-      (sum, item) => sum + item.recipe.calories,
-      0
-    );
-  };
-
   return (
     <Popup
       trigger={totalDiv}
@@ -96,9 +100,7 @@ const RenderDayTotalCaloriesPopup = (props) => {
             <button onClick={close}> &times; </button>
             <div className="d-flex justify-content-center align-items-center mb-3">
               <div style={{ maxWidth: "300px", maxHeight: "500px" }}>
-                <MacrosPieChart
-                 recipe={macros}
-                />
+                <MacrosPieChart recipe={macros} />
               </div>
             </div>
           </div>
@@ -108,11 +110,9 @@ const RenderDayTotalCaloriesPopup = (props) => {
   );
 };
 
-RenderDayTotalCaloriesPopup.propTypes = {
+RenderWeekTotalCaloriesPopup.propTypes = {
   fetchedMeals: PropTypes.any,
-  currentWeekMeals: PropTypes.any,
-  day: PropTypes.any,
-  recipe: PropTypes.any
+  currentWeekMeals: PropTypes.any
 };
 
-export default RenderDayTotalCaloriesPopup;
+export default RenderWeekTotalCaloriesPopup;
