@@ -191,14 +191,14 @@ const Calender = () => {
           display: function(context) {
             return context.dataset.data[context.dataIndex] > 3;
           },
-          formatter: (value, ctx) => {
+          formatter: (value) => {
             return value + "g";
           }
         },
         // Displayed when user hovers over chart.
         tooltip: {
           callbacks: {
-            title: (data) => {return ""},
+            title: () => {return ""},
             label: (data) => {return `${data.label}: ${data.raw}g`}
           }
         }
@@ -218,7 +218,7 @@ const Calender = () => {
       },
       withCredentials: true,
       credentials: 'include'
-    }).then((response) => {
+    }).then(() => {
       setFetchedMeals(false);
       setCurrentWeekMeals([]);
     });
@@ -255,13 +255,13 @@ const Calender = () => {
     return (
       <div
         draggable
-        onDragStart={e => {
+        onDragStart={() => {
           setDragMeal({ item: item, index: index, day: day });
         }}
         onDragOver={e => {
           e.preventDefault();
         }}
-        onDrop={e => {
+        onDrop={() => {
           // update current week meals with the food items new position
           var newWeekMeals = currentWeekMeals.slice();
           newWeekMeals[dragMeal.day] = currentWeekMeals[dragMeal.day].slice(0, dragMeal.index);
@@ -347,7 +347,7 @@ const Calender = () => {
                 onDragOver={e => {
                   e.preventDefault();
                 }}
-                onDrop={e => {
+                onDrop={() => {
                   var newWeekMeals = currentWeekMeals.slice();
                   newWeekMeals[dragMeal.day] = currentWeekMeals[dragMeal.day].slice(0, dragMeal.index);
                   newWeekMeals[dragMeal.day] = newWeekMeals[dragMeal.day].concat(currentWeekMeals[dragMeal.day].slice(dragMeal.index + 1));
